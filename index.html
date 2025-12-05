@@ -105,8 +105,27 @@
     </div>
 
     <div class="panel" id="gamePanel">
-      <h2 aria-live="polite">🎮 Elf Arcade Hub</h2>
-      <p>Choose an ornament to beam a mini-game into this glowing panel. Everything is tacky on purpose.</p>
+      <div class="arcade-head">
+        <h2 aria-live="polite">🎮 Elf Arcade Hub</h2>
+        <span class="arcade-sticker" aria-hidden="true">1996 NORTH POLE</span>
+      </div>
+      <p>Choose an ornament to beam a mini-game into this glowing panel. Everything is tacky on purpose — now with bonus 90s mall Santa energy.</p>
+      <div class="arcade-rail" aria-label="Elf arcade vibe controls">
+        <div class="rail-stack">
+          <div class="pill ticker">Elf Hotline: 1-800-RETRO-XMAS • VHS rewards unlocked when cheer is high!</div>
+          <div class="cheer-meter">
+            <label for="cheerRange">Cheer meter</label>
+            <input id="cheerRange" type="range" min="6" max="36" value="18" aria-describedby="cheerOutput" />
+            <output id="cheerOutput" class="pill tiny">Mall Santa Mode</output>
+          </div>
+        </div>
+        <div class="vibe-buttons" role="group" aria-label="Choose a 1990s vibe">
+          <button class="action vibe-btn" data-vibe="mall">🛍️ Mall Santa Mix</button>
+          <button class="action vibe-btn" data-vibe="cable">📺 Cable Special</button>
+          <button class="action vibe-btn" data-vibe="snowed">❄️ Blizzard LAN Party</button>
+        </div>
+      </div>
+      <div class="arcade-ticker" id="arcadeTicker" aria-live="polite">Dialed into mall fountain acoustics. Glitter levels nominal.</div>
       <div class="game-area" id="gameArea" aria-live="polite"></div>
     </div>
   </div>
