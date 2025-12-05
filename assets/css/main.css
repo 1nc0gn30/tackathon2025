@@ -615,6 +615,25 @@ footer {
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
+.ultimate-1997 {
+  background: radial-gradient(circle at 20% 20%, rgba(255, 0, 120, 0.16), #050505 55%),
+    radial-gradient(circle at 80% 10%, rgba(0, 255, 170, 0.12), #050505 60%),
+    repeating-linear-gradient(45deg, rgba(0, 255, 153, 0.08) 0, rgba(0, 255, 153, 0.08) 12px, rgba(0, 0, 0, 0) 12px, rgba(0, 0, 0, 0) 24px);
+  animation: hueShift 12s linear infinite;
+}
+
+@keyframes hueShift {
+  0% {
+    filter: hue-rotate(0deg) saturate(1);
+  }
+  50% {
+    filter: hue-rotate(25deg) saturate(1.1);
+  }
+  100% {
+    filter: hue-rotate(0deg) saturate(1);
+  }
+}
+
 @media (max-width: 940px) {
   .grid {
     grid-template-columns: 1fr;

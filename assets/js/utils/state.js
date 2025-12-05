@@ -22,6 +22,7 @@ export const state = {
   bestReaction: null,
   snowTicker: [],
   konamiBuffer: [],
+  konamiUnlocked: false,
   parallaxFrame: null,
   lastLocationLabel: 'your spot',
   preferences: loadPreferences(),

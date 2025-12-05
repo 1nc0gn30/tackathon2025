@@ -4,6 +4,18 @@ import { startSnowfall } from './snowfall.js';
 
 const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
+const updateBadge = (text, variant = 'waiting') => {
+  if (!dom.konamiBadge) return;
+  dom.konamiBadge.textContent = text;
+  dom.konamiBadge.dataset.variant = variant;
+};
+
+const updateStatus = (message) => {
+  if (dom.konamiStatus) {
+    dom.konamiStatus.textContent = message;
+  }
+};
+
 const playJingle = () => {
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
   const now = ctx.currentTime;
@@ -22,14 +34,20 @@ const playJingle = () => {
 };
 
 const triggerKonami = () => {
+  if (state.konamiUnlocked) return;
   startSnowfall(true);
   dom.body.classList.add('ultimate-1997');
   playJingle();
   const originalBackground = dom.body.style.background;
   dom.body.dataset.konamiBg = originalBackground;
+  state.konamiUnlocked = true;
+  updateStatus('Unlocked! Turbo snowfall engaged and the CRT went extra neon.');
+  updateBadge('Activated', 'success');
 };
 
 export const initKonami = () => {
+  updateStatus('Type the arrow keys, then B A, to fire up the cheat glow.');
+  updateBadge('Ready', 'ready');
   window.addEventListener('keydown', (e) => {
     state.konamiBuffer.push(e.key);
     if (state.konamiBuffer.length > konamiSequence.length) state.konamiBuffer.shift();
