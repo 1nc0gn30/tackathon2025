@@ -4,159 +4,628 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>1990s Tacky Christmas Portal — Hackathon 2025</title>
-
   <style>
-    /* --- GLOBAL DARK CRT THEME --- */
+    /* === GLOBAL 90s VIBES === */
+    :root {
+      --glow-green: #2fff7f;
+      --glow-red: #ff2f6d;
+      --panel: rgba(10, 10, 10, 0.8);
+      --scanlines: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.05) 0px,
+        rgba(255, 255, 255, 0.05) 2px,
+        rgba(0, 0, 0, 0) 4px
+      );
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      background: #0a0a0a;
-      font-family: "Courier New", monospace;
-      color: #39ff14;
+      font-family: "Comic Sans MS", "Courier New", cursive;
+      background: radial-gradient(circle at 20% 20%, #062b0f, #050505 55%),
+        radial-gradient(circle at 80% 10%, #0c1b3f, #050505 60%),
+        repeating-linear-gradient(45deg, #0b3e1d 0, #0b3e1d 10px, #0f0f0f 10px, #0f0f0f 20px);
+      color: var(--glow-green);
+      min-height: 100vh;
+      padding: 12px;
       overflow-x: hidden;
     }
 
-    /* CRT scanlines */
     body::after {
-      pointer-events: none;
       content: "";
       position: fixed;
-      top: 0; left: 0;
-      height: 100%; width: 100%;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,0.03) 0px,
-        rgba(255,255,255,0.03) 2px,
-        rgba(0,0,0,0) 3px
-      );
+      inset: 0;
+      pointer-events: none;
+      background: var(--scanlines);
       mix-blend-mode: overlay;
+      opacity: 0.5;
     }
 
-    /* --- HEADER --- */
+    /* === HEADER === */
     header {
       text-align: center;
-      padding: 40px 0 10px;
-      color: #ff003c;
-      letter-spacing: 3px;
-      text-shadow: 0 0 12px #ff003c;
-      font-size: 2rem;
+      padding: 10px 0 2px;
+      color: var(--glow-red);
+      text-shadow: 0 0 8px var(--glow-red);
+      letter-spacing: 4px;
+      font-size: 1.6rem;
       animation: flicker 2s infinite;
+    }
+
+    marquee {
+      color: #ffe900;
+      text-shadow: 0 0 10px #ffe900;
+      font-size: 1rem;
+      margin: 6px 0 14px;
     }
 
     @keyframes flicker {
       0%, 100% { opacity: 1; }
-      92% { opacity: 0.6; }
-      95% { opacity: 0.2; }
+      88% { opacity: 0.6; }
+      94% { opacity: 0.2; }
     }
 
-    /* --- CHRISTMAS LIGHTS --- */
+    /* === LAYOUT === */
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .panel {
+      position: relative;
+      background: var(--panel);
+      border: 3px ridge #39ff14;
+      border-radius: 14px;
+      box-shadow: 0 0 20px #39ff1480, inset 0 0 12px #ff2f6d60;
+      padding: 18px;
+      overflow: hidden;
+    }
+
+    .panel h2 {
+      margin: 0 0 6px;
+      color: #fff;
+      text-shadow: 0 0 6px #fff;
+      letter-spacing: 1px;
+    }
+
+    .panel p {
+      margin: 6px 0 12px;
+      color: #d2ffd2;
+    }
+
+    /* === TREE ZONE === */
+    .tree-wrap {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 10px;
+    }
+
     .lights {
       display: flex;
       justify-content: center;
-      gap: 12px;
-      margin-bottom: 20px;
+      gap: 14px;
+      margin-bottom: 6px;
     }
 
     .bulb {
-      width: 18px;
-      height: 28px;
-      border-radius: 50% 50% 45% 45%;
+      width: 22px;
+      height: 34px;
+      border-radius: 50% 50% 46% 46%;
       background: red;
       animation: blink 1s infinite alternate;
-      box-shadow: 0 0 12px red;
+      box-shadow: 0 0 14px red;
+      border: 2px solid #240000;
     }
 
-    .bulb:nth-child(2) { background: lime; animation-duration: 1.3s; box-shadow: 0 0 12px lime; }
-    .bulb:nth-child(3) { background: gold; animation-duration: 0.8s; box-shadow: 0 0 12px gold; }
-    .bulb:nth-child(4) { background: cyan; animation-duration: 1.6s; box-shadow: 0 0 12px cyan; }
+    .bulb:nth-child(2) { background: lime; animation-duration: 1.3s; box-shadow: 0 0 14px lime; }
+    .bulb:nth-child(3) { background: gold; animation-duration: 0.8s; box-shadow: 0 0 14px gold; }
+    .bulb:nth-child(4) { background: cyan; animation-duration: 1.6s; box-shadow: 0 0 14px cyan; }
+    .bulb:nth-child(5) { background: magenta; animation-duration: 1.1s; box-shadow: 0 0 14px magenta; }
 
     @keyframes blink {
-      from { opacity: 0.3; }
-      to { opacity: 1; }
+      from { opacity: 0.3; transform: translateY(0); }
+      to { opacity: 1; transform: translateY(-3px); }
     }
 
-    /* --- CENTER PANEL --- */
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-      text-align: center;
-      border: 2px solid #39ff14;
+    .tree-space {
+      position: relative;
+      min-height: 460px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 30%, #0f5c2a, #093016 62%, #010a05 85%);
+      border: 2px dashed #ffe90066;
       border-radius: 12px;
-      background: rgba(0, 0, 0, 0.4);
-      box-shadow: 0 0 20px #39ff1466;
+      box-shadow: inset 0 0 20px #01220f;
     }
 
-    button {
-      margin-top: 20px;
-      padding: 12px 24px;
-      font-size: 1rem;
-      font-family: inherit;
+    .tree {
+      position: relative;
+      width: 260px;
+      height: 360px;
+      filter: drop-shadow(0 0 12px #39ff14);
+    }
+
+    .tree .layer {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 40%;
+      background: linear-gradient(135deg, #0c8c3d, #0d5e2c 60%, #0c8c3d);
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      border: 3px solid #073a1a;
+      box-shadow: inset 0 0 12px #1aff7f66;
+    }
+
+    .layer:nth-child(1) { top: 10%; width: 60%; height: 32%; }
+    .layer:nth-child(2) { top: 32%; width: 74%; height: 34%; }
+    .layer:nth-child(3) { top: 56%; width: 90%; height: 40%; }
+
+    .tree .trunk {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 70px;
+      background: linear-gradient(90deg, #6b3f1f, #4a260f);
+      border: 3px solid #2a1608;
+      border-radius: 8px;
+    }
+
+    .tree .star {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%) rotate(8deg);
+      font-size: 36px;
+      filter: drop-shadow(0 0 8px #ffe900);
+      animation: twinkle 1.5s infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { transform: translateX(-50%) scale(1); opacity: 1; }
+      50% { transform: translateX(-50%) scale(1.1); opacity: 0.6; }
+    }
+
+    /* Ornaments */
+    .ornament {
+      position: absolute;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 32px;
+      color: #111;
+      border: 3px solid #ffe900;
       cursor: pointer;
-      background: #ff003c;
-      border: none;
-      border-radius: 6px;
-      color: white;
-      text-shadow: 0 0 6px black;
-      box-shadow: 0 0 15px #ff003c;
-      transition: transform 0.2s;
+      box-shadow: 0 0 16px #ffe90088, inset 0 0 10px #fff;
+      transition: transform 0.2s, filter 0.2s;
     }
 
-    button:hover {
-      transform: scale(1.1);
+    .ornament:hover { transform: scale(1.1) rotate(-4deg); filter: saturate(1.3); }
+    .ornament.active { outline: 4px double #ff2f6d; transform: scale(1.15); }
+
+    .ornament[data-id="snow"] { background: linear-gradient(135deg, #fff, #c7f8ff); top: 32%; left: 48%; }
+    .ornament[data-id="react"] { background: linear-gradient(135deg, #ff8bf0, #ff2f6d); top: 52%; left: 36%; }
+    .ornament[data-id="hunt"] { background: linear-gradient(135deg, #88f57b, #39ff14); top: 56%; left: 62%; }
+    .ornament[data-id="jukebox"] { background: linear-gradient(135deg, #ffd480, #ffb347); top: 70%; left: 46%; }
+
+    /* === GAME PANEL === */
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: #120021;
+      border: 2px solid #ff8bf0;
+      border-radius: 8px;
+      color: #ffd6ff;
+      box-shadow: 0 0 12px #ff8bf088;
+      margin-bottom: 10px;
     }
 
-    /* Snow output */
-    #snow {
-      white-space: pre;
+    button.action {
+      background: var(--glow-red);
+      border: 2px solid #ff9fb9;
       color: #fff;
-      font-size: 14px;
-      line-height: 12px;
-      padding-top: 20px;
-      height: 200px;
+      font-weight: bold;
+      padding: 12px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 12px var(--glow-red);
+      text-shadow: 0 0 6px #000;
+      transition: transform 0.15s ease;
+    }
+
+    button.action:hover { transform: translateY(-2px) scale(1.05); }
+
+    .game-area {
+      margin-top: 12px;
+      padding: 14px;
+      border: 2px dashed #39ff1488;
+      border-radius: 12px;
+      background: radial-gradient(circle, #0f1625, #050915 65%);
+      min-height: 180px;
+      color: #e4ffe4;
+      position: relative;
+    }
+
+    .mono { font-family: "Courier New", monospace; }
+
+    .snow-console {
+      background: #010c18;
+      color: #aee7ff;
+      padding: 12px;
+      min-height: 140px;
+      border-radius: 8px;
+      border: 2px solid #13c2ff;
+      box-shadow: inset 0 0 12px #13c2ff55;
+      white-space: pre-wrap;
+      line-height: 1.2;
+    }
+
+    .reaction-lamp {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #000;
+      font-weight: bold;
+      margin: 10px auto;
+      border: 6px solid #fff;
+      box-shadow: 0 0 16px currentColor;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .hunt-field {
+      position: relative;
+      height: 220px;
+      border: 2px dotted #ffe900;
+      margin-top: 10px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #083b1a, #03170b);
+      box-shadow: inset 0 0 14px #000;
+    }
+
+    .present {
+      position: absolute;
+      font-size: 28px;
+      cursor: pointer;
+      transition: transform 0.1s;
+      text-shadow: 0 0 8px #ff2f6d;
+    }
+
+    .present:hover { transform: scale(1.3) rotate(-6deg); }
+
+    .jukebox {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .ticker {
+      display: block;
+      font-size: 0.9rem;
+      color: #ffe900;
+      text-shadow: 0 0 8px #ffe900;
+      margin-top: 8px;
     }
 
     footer {
+      margin-top: 20px;
       text-align: center;
-      color: #777;
-      padding: 20px;
+      color: #8cd88c;
       font-size: 0.8rem;
+    }
+
+    @media (max-width: 940px) {
+      .grid { grid-template-columns: 1fr; }
+      .tree-space { min-height: 360px; }
     }
   </style>
 </head>
-
 <body>
-
   <header>🌲 TACKY CHRISTMAS PORTAL — 1990s EDITION 🌲</header>
+  <marquee scrollamount="8">WELCOME TO THE HACKATHON NORTH POLE NETZONE • DOUBLE-CLICK EVERYTHING • EAT VIRTUAL COOKIES • WIN VIRTUAL GLORY</marquee>
 
-  <div class="lights">
-    <div class="bulb"></div>
-    <div class="bulb"></div>
-    <div class="bulb"></div>
-    div class="bulb"></div>
+  <div class="grid">
+    <div class="tree-wrap panel">
+      <div class="lights">
+        <div class="bulb"></div>
+        <div class="bulb"></div>
+        <div class="bulb"></div>
+        <div class="bulb"></div>
+        <div class="bulb"></div>
+      </div>
+      <div class="tree-space">
+        <div class="tree" aria-label="Retro Christmas Tree">
+          <div class="star">✸</div>
+          <div class="layer"></div>
+          <div class="layer"></div>
+          <div class="layer"></div>
+          <div class="trunk"></div>
+          <button class="ornament" data-id="snow" title="Snow Console">❄️</button>
+          <button class="ornament" data-id="react" title="Elf Reaction Lab">🎄</button>
+          <button class="ornament" data-id="hunt" title="Present Hunt">🎁</button>
+          <button class="ornament" data-id="jukebox" title="Jingle Jukebox">🎶</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="info">
+      <h2 id="title">Select an Ornament!</h2>
+      <p id="description">Click a shiny bauble on the tree to flood the background with nostalgia and unlock a mini-experience.</p>
+      <div class="status" id="status">
+        <span>🖥️</span>
+        <strong>Tip:</strong> Double-click the tree for a random hype cheer.
+      </div>
+      <div class="game-area" id="gameArea"></div>
+      <small class="ticker" id="ticker">Background: default CRT midnight glitter</small>
+    </div>
   </div>
 
-  <div class="container">
-    <h2>Welcome to the 2025 Hackathon Experience</h2>
-    <p>Shake the tree for maximum 1990s chaos.</p>
-
-    <button onclick="shakeTree()">🎄 Shake the Tree 🎄</button>
-    <div id="snow"></div>
-  </div>
-
-  <footer>© 2025 Tacky Holiday Labs</footer>
+  <footer>© 2025 Tacky Holiday Labs — Powered by caffeine, glitter, and dial-up dreams.</footer>
 
   <script>
-    // --- ASCII SNOW GENERATOR ---
-    function shakeTree() {
-      const snowBox = document.getElementById("snow");
-      snowBox.innerText = "";
-      let frames = 0;
-      
-      const interval = setInterval(() => {
-        frames++;
-        snowBox.innerText += "*   *      *   *\n";
-        if (frames > 12) clearInterval(interval);
-      }, 120);
+    const ornaments = {
+      snow: {
+        title: "Snow Console",
+        description: "ASCII blizzard generator. Mash the button to unleash pixel snow and log your storm score!",
+        background: "radial-gradient(circle at 30% 20%, #022942, #010915 65%), repeating-linear-gradient(135deg, #032b44 0, #032b44 12px, #000 12px, #000 22px)",
+        accent: "#13c2ff",
+        render: renderSnowConsole,
+      },
+      react: {
+        title: "Elf Reaction Lab",
+        description: "Wait for the crystal ball to glow green, then SLAP that button. How fast can your hacker-reflexes go?",
+        background: "radial-gradient(circle at 80% 10%, #2b002b, #08000f 65%), repeating-linear-gradient(90deg, #300030 0, #300030 18px, #0c0c0c 18px, #0c0c0c 32px)",
+        accent: "#ff8bf0",
+        render: renderReactionLab,
+      },
+      hunt: {
+        title: "Present Hunt",
+        description: "Presents teleport around the yard. Click them all before the sleigh flies by!",
+        background: "radial-gradient(circle at 40% 30%, #0b4d21, #03170b 70%), repeating-linear-gradient(-45deg, #093414 0, #093414 14px, #010603 14px, #010603 26px)",
+        accent: "#39ff14",
+        render: renderPresentHunt,
+      },
+      jukebox: {
+        title: "Jingle Jukebox",
+        description: "Pick a 90s-inspired jingle mood and watch the background go full neon candy-cane.",
+        background: "radial-gradient(circle at 50% 40%, #402600, #0f0700 70%), repeating-linear-gradient(0deg, #664000 0, #664000 10px, #0f0700 10px, #0f0700 18px)",
+        accent: "#ffb347",
+        render: renderJukebox,
+      },
+    };
+
+    let activeId = null;
+    let activeInterval = null;
+    let activeTimeout = null;
+
+    const titleEl = document.getElementById("title");
+    const descEl = document.getElementById("description");
+    const statusEl = document.getElementById("status");
+    const gameArea = document.getElementById("gameArea");
+    const ticker = document.getElementById("ticker");
+
+    document.querySelectorAll(".ornament").forEach(btn => {
+      btn.addEventListener("click", () => setActive(btn.dataset.id));
+    });
+
+    document.querySelector(".tree").addEventListener("dblclick", () => {
+      const hype = [
+        "DIAL-UP READY!", "SLEIGH MODE: HYPER", "ELF OPS ONLINE", "GLITTER CACHE FLUSHED",
+        "SANTANET v1.99", "COOKIE BOOST +9", "PIXEL WREATH DEPLOYED"
+      ];
+      statusEl.innerHTML = `<span>✨</span><strong>${hype[Math.floor(Math.random() * hype.length)]}</strong>`;
+    });
+
+    function setActive(id) {
+      const ornament = ornaments[id];
+      if (!ornament) return;
+
+      document.querySelectorAll(".ornament").forEach(btn => btn.classList.toggle("active", btn.dataset.id === id));
+
+      titleEl.textContent = ornament.title;
+      descEl.textContent = ornament.description;
+      statusEl.innerHTML = `<span>🔔</span><strong>${ornament.title} ready!</strong>`;
+      ticker.textContent = `Background: ${ornament.title}`;
+
+      document.body.style.background = ornament.background;
+
+      cleanupTimers();
+      ornament.render(ornament.accent);
+      activeId = id;
+    }
+
+    function cleanupTimers() {
+      if (activeInterval) clearInterval(activeInterval);
+      if (activeTimeout) clearTimeout(activeTimeout);
+      activeInterval = null;
+      activeTimeout = null;
+    }
+
+    function renderSnowConsole(accent) {
+      gameArea.innerHTML = `
+        <div class="status" style="border-color:${accent}; box-shadow:0 0 12px ${accent};">
+          <span>❄️</span><strong>ASCII Blizzard Control</strong>
+        </div>
+        <button class="action" id="snowBtn">MAKE IT SNOW</button>
+        <div class="snow-console mono" id="snowLog"></div>
+      `;
+
+      const snowBtn = document.getElementById("snowBtn");
+      const log = document.getElementById("snowLog");
+      let count = 0;
+      snowBtn.addEventListener("click", () => {
+        log.textContent += `\n[storm.exe] Spawning flakes...`;
+        count += 1;
+        let steps = 0;
+        activeInterval = setInterval(() => {
+          const row = Array.from({ length: 28 }, () => (Math.random() > 0.75 ? "*" : " ")).join("");
+          log.textContent += `\n${row}`;
+          log.scrollTop = log.scrollHeight;
+          steps++;
+          if (steps > 12) {
+            clearInterval(activeInterval);
+            activeInterval = null;
+            log.textContent += `\n[storm.exe] Blizzard ${count} complete!`;
+          }
+        }, 120);
+      });
+    }
+
+    function renderReactionLab(accent) {
+      gameArea.innerHTML = `
+        <div class="status" style="border-color:${accent}; box-shadow:0 0 12px ${accent};">
+          <span>🎄</span><strong>Elf Reflex Tester</strong>
+        </div>
+        <div class="reaction-lamp" id="lamp" style="background:#440044; color:#ffe9ff;">WAIT</div>
+        <button class="action" id="reactBtn">ARM THE LASERS</button>
+        <div class="mono" id="reactLog">Prep your clicking finger...</div>
+      `;
+
+      const lamp = document.getElementById("lamp");
+      const btn = document.getElementById("reactBtn");
+      const log = document.getElementById("reactLog");
+      let ready = false;
+      let startTime = 0;
+
+      btn.addEventListener("click", () => {
+        cleanupTimers();
+        lamp.textContent = "WAIT";
+        lamp.style.background = "#440044";
+        lamp.style.color = "#ffe9ff";
+        log.textContent = "Holding...";
+        ready = false;
+
+        activeTimeout = setTimeout(() => {
+          ready = true;
+          lamp.textContent = "GO!";
+          lamp.style.background = "#00ff88";
+          lamp.style.color = "#002b10";
+          startTime = performance.now();
+        }, 1200 + Math.random() * 1800);
+      });
+
+      lamp.addEventListener("click", () => {
+        if (!ready) {
+          log.textContent = "Too early! The elves giggle.";
+          return;
+        }
+        const ms = Math.round(performance.now() - startTime);
+        log.textContent = `Reaction: ${ms}ms — ${ms < 250 ? "🎁 Lightning Elf!" : ms < 400 ? "🌟 Solid!" : "😴 Sleepy Santa..."}`;
+        lamp.textContent = `${ms}ms`;
+        ready = false;
+      });
+    }
+
+    function renderPresentHunt(accent) {
+      gameArea.innerHTML = `
+        <div class="status" style="border-color:${accent}; box-shadow:0 0 12px ${accent};">
+          <span>🎁</span><strong>Present Radar</strong>
+        </div>
+        <button class="action" id="spawnBtn">SPAWN PRESENTS</button>
+        <div class="mono" id="huntLog">Click all the presents before they despawn.</div>
+        <div class="hunt-field" id="huntField"></div>
+      `;
+
+      const field = document.getElementById("huntField");
+      const log = document.getElementById("huntLog");
+      const btn = document.getElementById("spawnBtn");
+      const presents = ["🎁", "🎀", "🧦", "🧸", "🍬", "🍭", "🎫"];
+
+      btn.addEventListener("click", () => {
+        field.innerHTML = "";
+        cleanupTimers();
+        let found = 0;
+        const total = 6 + Math.floor(Math.random() * 4);
+        const start = performance.now();
+
+        for (let i = 0; i < total; i++) {
+          const gift = document.createElement("span");
+          gift.textContent = presents[Math.floor(Math.random() * presents.length)];
+          gift.className = "present";
+          gift.style.left = Math.random() * 88 + "%";
+          gift.style.top = Math.random() * 82 + "%";
+          gift.addEventListener("click", () => {
+            gift.remove();
+            found++;
+            const elapsed = Math.round(performance.now() - start);
+            log.textContent = `Collected ${found}/${total} in ${elapsed}ms`;
+            if (found === total) {
+              log.textContent = `ALL PRESENTS SECURED in ${elapsed}ms — SLEIGH DEPLOYED!`;
+            }
+          });
+          field.appendChild(gift);
+        }
+
+        activeTimeout = setTimeout(() => {
+          if (field.children.length > 0) {
+            log.textContent = "Time's up! The sleigh zoomed away.";
+            field.innerHTML = "";
+          }
+        }, 10000);
+      });
+    }
+
+    function renderJukebox(accent) {
+      gameArea.innerHTML = `
+        <div class="status" style="border-color:${accent}; box-shadow:0 0 12px ${accent};">
+          <span>🎶</span><strong>Jingle Jukebox</strong>
+        </div>
+        <p>Pick a vibe and the whole background morphs like a GIF from 1997.</p>
+        <div class="jukebox" id="jukeboxGrid"></div>
+        <div class="mono" id="jukeboxLog">Pro tip: stack vibes for maximum chaos.</div>
+      `;
+
+      const vibes = [
+        {
+          name: "Candy Cane",
+          bg: "repeating-linear-gradient(45deg, #ff2f6d 0, #ff2f6d 14px, #ffffff 14px, #ffffff 28px)",
+          note: "Classic stripes for maximal sugar rush",
+        },
+        {
+          name: "Aurora",
+          bg: "radial-gradient(circle at 20% 30%, #00ffcc, transparent 35%), radial-gradient(circle at 80% 40%, #ff00f7, transparent 40%), #01000c",
+          note: "Northern lights straight from MS Paint",
+        },
+        {
+          name: "CRT Grid",
+          bg: "linear-gradient(0deg, #0f0f0f 0, #0f0f0f 92%, #39ff14 92%), linear-gradient(90deg, #0f0f0f 0, #0f0f0f 92%, #39ff14 92%)",
+          note: "Green-on-black motherboard chic",
+        },
+        {
+          name: "Gingerbread",
+          bg: "repeating-linear-gradient(0deg, #6b3f1f 0, #6b3f1f 20px, #3b1f0c 20px, #3b1f0c 36px)",
+          note: "Warm cookie plaid goodness",
+        },
+      ];
+
+      const grid = document.getElementById("jukeboxGrid");
+      const log = document.getElementById("jukeboxLog");
+
+      vibes.forEach(vibe => {
+        const card = document.createElement("button");
+        card.className = "action";
+        card.style.background = accent;
+        card.style.color = "#120021";
+        card.innerHTML = `<strong>${vibe.name}</strong><br><small>${vibe.note}</small>`;
+        card.addEventListener("click", () => {
+          document.body.style.background = vibe.bg;
+          log.textContent = `${vibe.name} engaged — backgrounds like it's 1997!`;
+        });
+        grid.appendChild(card);
+      });
     }
   </script>
 </body>
