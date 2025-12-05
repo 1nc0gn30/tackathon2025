@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1990s Tacky Christmas Portal — Hackathon 2025</title>
+
+  <style>
+    /* --- GLOBAL DARK CRT THEME --- */
+    body {
+      margin: 0;
+      background: #0a0a0a;
+      font-family: "Courier New", monospace;
+      color: #39ff14;
+      overflow-x: hidden;
+    }
+
+    /* CRT scanlines */
+    body::after {
+      pointer-events: none;
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      height: 100%; width: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.03) 0px,
+        rgba(255,255,255,0.03) 2px,
+        rgba(0,0,0,0) 3px
+      );
+      mix-blend-mode: overlay;
+    }
+
+    /* --- HEADER --- */
+    header {
+      text-align: center;
+      padding: 40px 0 10px;
+      color: #ff003c;
+      letter-spacing: 3px;
+      text-shadow: 0 0 12px #ff003c;
+      font-size: 2rem;
+      animation: flicker 2s infinite;
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      92% { opacity: 0.6; }
+      95% { opacity: 0.2; }
+    }
+
+    /* --- CHRISTMAS LIGHTS --- */
+    .lights {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .bulb {
+      width: 18px;
+      height: 28px;
+      border-radius: 50% 50% 45% 45%;
+      background: red;
+      animation: blink 1s infinite alternate;
+      box-shadow: 0 0 12px red;
+    }
+
+    .bulb:nth-child(2) { background: lime; animation-duration: 1.3s; box-shadow: 0 0 12px lime; }
+    .bulb:nth-child(3) { background: gold; animation-duration: 0.8s; box-shadow: 0 0 12px gold; }
+    .bulb:nth-child(4) { background: cyan; animation-duration: 1.6s; box-shadow: 0 0 12px cyan; }
+
+    @keyframes blink {
+      from { opacity: 0.3; }
+      to { opacity: 1; }
+    }
+
+    /* --- CENTER PANEL --- */
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      text-align: center;
+      border: 2px solid #39ff14;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0 20px #39ff1466;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-family: inherit;
+      cursor: pointer;
+      background: #ff003c;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      text-shadow: 0 0 6px black;
+      box-shadow: 0 0 15px #ff003c;
+      transition: transform 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+    }
+
+    /* Snow output */
+    #snow {
+      white-space: pre;
+      color: #fff;
+      font-size: 14px;
+      line-height: 12px;
+      padding-top: 20px;
+      height: 200px;
+    }
+
+    footer {
+      text-align: center;
+      color: #777;
+      padding: 20px;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>🌲 TACKY CHRISTMAS PORTAL — 1990s EDITION 🌲</header>
+
+  <div class="lights">
+    <div class="bulb"></div>
+    <div class="bulb"></div>
+    <div class="bulb"></div>
+    div class="bulb"></div>
+  </div>
+
+  <div class="container">
+    <h2>Welcome to the 2025 Hackathon Experience</h2>
+    <p>Shake the tree for maximum 1990s chaos.</p>
+
+    <button onclick="shakeTree()">🎄 Shake the Tree 🎄</button>
+    <div id="snow"></div>
+  </div>
+
+  <footer>© 2025 Tacky Holiday Labs</footer>
+
+  <script>
+    // --- ASCII SNOW GENERATOR ---
+    function shakeTree() {
+      const snowBox = document.getElementById("snow");
+      snowBox.innerText = "";
+      let frames = 0;
+      
+      const interval = setInterval(() => {
+        frames++;
+        snowBox.innerText += "*   *      *   *\n";
+        if (frames > 12) clearInterval(interval);
+      }, 120);
+    }
+  </script>
+</body>
+</html>
