@@ -517,9 +517,11 @@
       inset: 0;
       pointer-events: none;
       overflow: hidden;
-      z-index: 9;
+      z-index: 1;
       opacity: 0;
       transition: opacity 0.4s ease;
+      mix-blend-mode: screen;
+      filter: blur(0.4px) saturate(1.1);
     }
 
     .snowflake {
@@ -539,6 +541,68 @@
         radial-gradient(circle at 20% 20%, #ff00c8, #000 55%), radial-gradient(circle at 80% 10%, #00ffcc, #000 60%);
       color: #ffe900;
     }
+
+    .weather-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      margin: 12px 0;
+    }
+
+    .weather-card {
+      background: linear-gradient(180deg, rgba(13, 32, 48, 0.8), rgba(5, 14, 25, 0.9));
+      border: 2px solid #13c2ff55;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: inset 0 0 14px #13c2ff30;
+      display: grid;
+      gap: 8px;
+    }
+
+    .weather-card h3 { margin: 0; color: #dfffff; }
+
+    .current-weather {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .temp-big {
+      font-size: 2.4rem;
+      font-weight: bold;
+      color: #ffffff;
+      text-shadow: 0 0 10px #13c2ff;
+    }
+
+    .snow-places {
+      display: grid;
+      gap: 8px;
+    }
+
+    .snow-pill {
+      background: rgba(19, 194, 255, 0.1);
+      border: 1px solid rgba(19, 194, 255, 0.4);
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #dfffff;
+    }
+
+    .snow-pill strong { color: #fff; }
+
+    .webcam-frame {
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 16px rgba(19, 194, 255, 0.4);
+      aspect-ratio: 16 / 9;
+      background: radial-gradient(circle, rgba(19, 194, 255, 0.25), rgba(5, 12, 22, 0.8));
+    }
+
+    .webcam-frame iframe { width: 100%; height: 100%; border: 0; }
 
     .tool-row {
       display: flex;
@@ -635,6 +699,7 @@
       snowTicker: [],
       konamiBuffer: [],
       parallaxFrame: null,
+      lastLocationLabel: 'your spot',
     };
 
     const cleanupTimers = () => {
@@ -666,13 +731,145 @@
 
     /* === SNOW CONSOLE CONTROLLER === */
     const SnowConsole = (() => {
-      let logEl;
+      let logEl, weatherEl, snowPlacesEl, webcamEl, weatherStatusEl, searchForm, searchInput;
+      const snowCodes = new Set([71, 73, 75, 77, 85, 86]);
+      const snowWatchlist = [
+        { name: 'Anchorage, Alaska', lat: 61.2181, lon: -149.9003, cam: 'https://www.youtube.com/embed/live_stream?channel=UC6lV5W7n_BpUUPsRBoXiO9g' },
+        { name: 'Reykjavík, Iceland', lat: 64.1466, lon: -21.9426, cam: 'https://www.youtube.com/embed/zN3UAkEoHgc' },
+        { name: 'Banff, Canada', lat: 51.1784, lon: -115.5708, cam: 'https://www.youtube.com/embed/9VnP2n6wTgw' },
+        { name: 'Sapporo, Japan', lat: 43.0618, lon: 141.3545, cam: '' },
+        { name: 'Helsinki, Finland', lat: 60.1699, lon: 24.9384, cam: '' },
+        { name: 'Denver, USA', lat: 39.7392, lon: -104.9903, cam: '' },
+      ];
 
       const addLog = (message) => {
         if (!logEl) return;
         state.snowTicker.push(message);
         if (state.snowTicker.length > 12) state.snowTicker.shift();
         logEl.textContent = state.snowTicker.join('\n');
+      };
+
+      const describeWeather = (code) => {
+        const map = {
+          0: 'Clear sky',
+          1: 'Mostly clear',
+          2: 'Partly cloudy',
+          3: 'Overcast',
+          45: 'Foggy',
+          48: 'Icy fog',
+          51: 'Light drizzle',
+          53: 'Drizzle',
+          55: 'Heavy drizzle',
+          56: 'Freezing drizzle',
+          57: 'Heavy freezing drizzle',
+          61: 'Light rain',
+          63: 'Rain',
+          65: 'Heavy rain',
+          66: 'Freezing rain',
+          67: 'Heavy freezing rain',
+          71: 'Slight snow',
+          73: 'Snow',
+          75: 'Heavy snow',
+          77: 'Snow grains',
+          80: 'Rain showers',
+          81: 'Heavy rain showers',
+          82: 'Violent rain showers',
+          85: 'Snow showers',
+          86: 'Heavy snow showers',
+        };
+        return map[code] || 'Mystery weather';
+      };
+
+      const renderCurrentWeather = (data, label) => {
+        if (!weatherEl) return;
+        const description = describeWeather(data.weathercode);
+        const snowNote = snowCodes.has(data.weathercode)
+          ? '❄️ Snow is happening right now!'
+          : data.snowfall > 0
+            ? `🌨️ Snow in the last hour: ${data.snowfall.toFixed(1)}mm`
+            : 'No active snowflakes here (yet).';
+        weatherEl.innerHTML = `
+          <div class="temp-big">${Math.round(data.temperature_2m)}°C</div>
+          <div>
+            <strong>${label}</strong><br />
+            ${description}<br />
+            <span class="pill">Feels like: ${data.apparent_temperature ? Math.round(data.apparent_temperature) + '°C' : 'N/A'}</span>
+            <div>${snowNote}</div>
+          </div>
+        `;
+        weatherStatusEl.textContent = 'Live data fetched from Open-Meteo.';
+      };
+
+      const renderSnowPlaces = (places) => {
+        if (!snowPlacesEl) return;
+        if (!places.length) {
+          snowPlacesEl.innerHTML = '<div class="snow-pill">No tracked cities are snowing right now. Settle in with cocoa.</div>';
+          webcamEl.innerHTML = '<div class="snow-pill">No live snow cams available.</div>';
+          return;
+        }
+
+        snowPlacesEl.innerHTML = places
+          .map((spot) => `
+            <div class="snow-pill">
+              <span aria-hidden="true">❄️</span>
+              <div>
+                <strong>${spot.name}</strong><br />
+                ${describeWeather(spot.weathercode)} — ${Math.round(spot.temperature_2m)}°C
+              </div>
+            </div>
+          `)
+          .join('');
+
+        const camCity = places.find((p) => p.cam);
+        if (camCity && camCity.cam) {
+          webcamEl.innerHTML = `
+            <div class="webcam-frame" aria-label="Live snow webcam for ${camCity.name}">
+              <iframe src="${camCity.cam}" allowfullscreen title="${camCity.name} snow cam"></iframe>
+            </div>
+            <small>Live cam: ${camCity.name} (public YouTube embed)</small>
+          `;
+        } else {
+          webcamEl.innerHTML = '<div class="snow-pill">No free public snow cam available among current snow spots.</div>';
+        }
+      };
+
+      const fetchWeather = async (lat, lon, label) => {
+        weatherStatusEl.textContent = 'Contacting Open-Meteo...';
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,weathercode,snowfall&timezone=auto`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Weather fetch failed');
+        const data = await res.json();
+        if (!data.current) throw new Error('No current weather block');
+        state.lastLocationLabel = label;
+        renderCurrentWeather(data.current, label);
+      };
+
+      const findByCityName = async (name) => {
+        const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=en&format=json`);
+        if (!res.ok) throw new Error('Lookup failed');
+        const data = await res.json();
+        if (!data.results || !data.results.length) throw new Error('City not found');
+        const match = data.results[0];
+        await fetchWeather(match.latitude, match.longitude, `${match.name}, ${match.country_code}`);
+      };
+
+      const fetchSnowWatch = async () => {
+        const promises = snowWatchlist.map(async (spot) => {
+          const url = `https://api.open-meteo.com/v1/forecast?latitude=${spot.lat}&longitude=${spot.lon}&current=temperature_2m,weathercode&timezone=auto`;
+          const res = await fetch(url);
+          if (!res.ok) throw new Error('Snow lookup failed');
+          const data = await res.json();
+          return { ...spot, ...data.current };
+        });
+
+        try {
+          const results = await Promise.all(promises);
+          const activeSnow = results.filter((spot) => snowCodes.has(spot.weathercode));
+          renderSnowPlaces(activeSnow);
+        } catch (err) {
+          snowPlacesEl.innerHTML = `<div class="snow-pill">Could not update snow tracker: ${err.message}</div>`;
+          webcamEl.innerHTML = '';
+        }
       };
 
       const startStream = () => {
@@ -690,7 +887,28 @@
         dom.gameArea.innerHTML = `
           <div class="status" aria-label="Snow console status">
             <span aria-hidden="true">❄️</span><strong>Snow Console</strong>
-            <span class="pill">Text-mode forecast</span>
+            <span class="pill">Live forecast + snow TV</span>
+          </div>
+          <div class="weather-grid">
+            <div class="weather-card">
+              <h3>My Forecast</h3>
+              <p id="weatherStatus">Ready to detect your weather via Open-Meteo (no API key needed).</p>
+              <div class="control-row">
+                <button class="action" id="detectWeather">Use My Weather</button>
+                <form class="control-row" id="cityLookup" style="gap:6px;">
+                  <label class="mono" for="cityInput">or type a city</label>
+                  <input id="cityInput" type="text" placeholder="e.g. Oslo" aria-label="City name" />
+                  <button class="action button-like" type="submit">Search</button>
+                </form>
+              </div>
+              <div class="current-weather" id="currentWeather" aria-live="polite">Enter a location to see if snow is falling.</div>
+            </div>
+            <div class="weather-card">
+              <h3>Global Snow Radar</h3>
+              <p>Watching alpine towns for live flakes and cams.</p>
+              <div class="snow-places" id="snowPlaces"></div>
+              <div id="snowCam"></div>
+            </div>
           </div>
           <div class="control-row">
             <button class="action" id="snowPrint">PRINT SNOW</button>
@@ -699,10 +917,17 @@
           <div class="snow-console mono" id="snowLog" role="log" aria-live="polite"></div>
         `;
         logEl = document.getElementById('snowLog');
+        weatherEl = document.getElementById('currentWeather');
+        weatherStatusEl = document.getElementById('weatherStatus');
+        snowPlacesEl = document.getElementById('snowPlaces');
+        webcamEl = document.getElementById('snowCam');
+        searchForm = document.getElementById('cityLookup');
+        searchInput = document.getElementById('cityInput');
         addLog('Console booted. Brrr.');
 
         const startBtn = document.getElementById('snowPrint');
         const stopBtn = document.getElementById('snowStop');
+        const detectBtn = document.getElementById('detectWeather');
 
         startBtn.addEventListener('click', startStream);
         stopBtn.addEventListener('click', () => {
@@ -710,6 +935,37 @@
           state.snowTicker = [];
           addLog('Console cleared.');
         });
+
+        detectBtn.addEventListener('click', () => {
+          weatherStatusEl.textContent = 'Requesting browser location...';
+          if (!navigator.geolocation) {
+            weatherStatusEl.textContent = 'Geolocation is unavailable in this browser.';
+            return;
+          }
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              const { latitude, longitude } = pos.coords;
+              fetchWeather(latitude, longitude, 'Your location').catch((err) => {
+                weatherStatusEl.textContent = `Weather lookup failed: ${err.message}`;
+              });
+            },
+            (err) => {
+              weatherStatusEl.textContent = `Location blocked (${err.message}). Try typing a city.`;
+            }
+          );
+        });
+
+        searchForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const query = searchInput.value.trim();
+          if (!query) return;
+          weatherStatusEl.textContent = `Searching for ${query}...`;
+          findByCityName(query).catch((err) => {
+            weatherStatusEl.textContent = err.message;
+          });
+        });
+
+        fetchSnowWatch();
       };
 
       return { render };
@@ -1074,16 +1330,17 @@
     /* === SNOWFALL === */
     let snowInterval;
     const startSnowfall = (intense = false) => {
-      dom.snowfallLayer.style.opacity = 1;
-      const maxFlakes = intense ? 20 : 10;
+      dom.snowfallLayer.style.opacity = intense ? 1 : 0.75;
+      const maxFlakes = intense ? 24 : 14;
       if (snowInterval) clearInterval(snowInterval);
       snowInterval = setInterval(() => {
         const flake = document.createElement('div');
         flake.className = 'snowflake';
         flake.textContent = '✻';
         flake.style.left = Math.random() * 100 + '%';
-        flake.style.animationDuration = 6 + Math.random() * 6 + 's';
+        flake.style.animationDuration = 7 + Math.random() * 6 + 's';
         flake.style.fontSize = 12 + Math.random() * 10 + 'px';
+        flake.style.opacity = intense ? 0.8 : 0.55;
         dom.snowfallLayer.appendChild(flake);
         setTimeout(() => flake.remove(), 12000);
       }, 600 / maxFlakes);
