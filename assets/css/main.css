@@ -4,6 +4,7 @@
   --glow-green: #2fff7f;
   --glow-red: #ff2f6d;
   --panel: rgba(8, 10, 18, 0.82);
+  --cheer-heat: 18px;
   --scanlines: repeating-linear-gradient(
     to bottom,
     rgba(255, 255, 255, 0.05) 0px,
@@ -106,7 +107,7 @@ marquee {
   background: var(--panel);
   border: 3px ridge #39ff14;
   border-radius: 14px;
-  box-shadow: 0 0 20px #39ff1480, inset 0 0 12px #ff2f6d60;
+  box-shadow: 0 0 calc(var(--cheer-heat) + 8px) #39ff1480, inset 0 0 12px #ff2f6d60;
   padding: 18px;
   overflow: hidden;
 }
@@ -201,6 +202,97 @@ button {
 .game-area {
   min-height: 520px;
   position: relative;
+}
+
+.arcade-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.arcade-sticker {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
+  border: 1px dashed rgba(255, 255, 255, 0.4);
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 0.75rem;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+}
+
+.arcade-rail {
+  margin: 12px 0;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1.2fr 1fr;
+  align-items: stretch;
+}
+
+.rail-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.cheer-meter {
+  display: grid;
+  gap: 6px;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(255, 0, 120, 0.08), rgba(0, 255, 170, 0.08));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.45);
+}
+
+.cheer-meter input[type='range'] {
+  accent-color: var(--active-accent);
+  width: 100%;
+}
+
+.cheer-meter output {
+  justify-self: start;
+}
+
+.vibe-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.vibe-btn {
+  background: linear-gradient(135deg, rgba(57, 255, 20, 0.18), rgba(255, 0, 140, 0.16));
+  border-style: double;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.vibe-btn.active {
+  box-shadow: 0 0 16px rgba(255, 185, 0, 0.45), inset 0 0 10px rgba(0, 0, 0, 0.5);
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, rgba(255, 185, 0, 0.35), rgba(57, 255, 20, 0.25));
+}
+
+.arcade-ticker {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0, rgba(255, 255, 255, 0.07) 8px, rgba(0, 0, 0, 0.15) 8px, rgba(0, 0, 0, 0.15) 16px);
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.4);
+  color: #fefefe;
+}
+
+body.vibe-mall {
+  background: radial-gradient(circle at 20% 20%, #1e0a2b, #050505 55%), radial-gradient(circle at 80% 10%, #1c3a66, #050505 60%), repeating-linear-gradient(45deg, #350d31 0, #350d31 14px, #0f0f0f 14px, #0f0f0f 28px);
+}
+
+body.vibe-cable {
+  background: radial-gradient(circle at 30% 30%, #0c2a1f, #04040a 55%), radial-gradient(circle at 75% 12%, #12274f, #050505 60%), repeating-linear-gradient(45deg, #0a4230 0, #0a4230 14px, #0f0f0f 14px, #0f0f0f 28px);
+}
+
+body.vibe-snowed {
+  background: radial-gradient(circle at 24% 22%, #0a1a2b, #050505 55%), radial-gradient(circle at 80% 10%, #134562, #050505 60%), repeating-linear-gradient(45deg, #0d2b42 0, #0d2b42 14px, #0f0f0f 14px, #0f0f0f 28px);
 }
 
 .snow-console {
@@ -753,6 +845,12 @@ footer {
 @media (max-width: 940px) {
   .grid {
     grid-template-columns: 1fr;
+  }
+  .arcade-rail {
+    grid-template-columns: 1fr;
+  }
+  .vibe-buttons {
+    justify-content: flex-start;
   }
   .jukebox-header,
   .theater-grid {
