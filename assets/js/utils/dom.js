@@ -11,6 +11,8 @@ export const dom = {
   settingsPanel: document.getElementById('settingsPanel'),
   settingsToggle: document.getElementById('settingsToggle'),
   webglCanvas: document.getElementById('webglCanvas'),
+  konamiStatus: document.getElementById('konamiStatus'),
+  konamiBadge: document.getElementById('konamiBadge'),
 };
 
 export const setAccent = (color) => {

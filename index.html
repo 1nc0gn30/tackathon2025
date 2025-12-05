@@ -42,11 +42,15 @@
         <div class="bulb"></div>
       </div>
       <div class="tree-space parallax-tilt" aria-label="Tree zone with ornaments" tabindex="-1">
+        <div class="tree-floor" aria-hidden="true"></div>
+        <div class="tree-aurora" aria-hidden="true"></div>
         <div class="tree" aria-label="Retro Christmas Tree">
           <div class="star" aria-hidden="true">✸</div>
           <div class="layer"></div>
           <div class="layer"></div>
           <div class="layer"></div>
+          <div class="garland" aria-hidden="true"></div>
+          <div class="sparkles" aria-hidden="true"></div>
           <div class="trunk" aria-hidden="true"></div>
           <div class="glow-base" aria-hidden="true"></div>
           <button class="ornament" data-id="snow" data-label="Snow Console" aria-label="Open Snow Console">❄️</button>
@@ -54,6 +58,35 @@
           <button class="ornament" data-id="hunt" data-label="Present Hunt" aria-label="Open Present Hunt">🎁</button>
           <button class="ornament" data-id="theater" data-label="Retro Theater" aria-label="Open Retro Movie Theater">🎬</button>
           <button class="ornament" data-id="jukebox" data-label="Jingle Box" aria-label="Open Jingle Jukebox">🎶</button>
+        </div>
+      </div>
+
+      <div class="tree-helper" aria-live="polite">
+        <div class="helper-block">
+          <h3>Tree controls</h3>
+          <p>Tab through ornaments, hit Enter to open a mini-game, or double-click them for maximum sparkle.</p>
+          <div class="key-row" aria-hidden="true">
+            <span class="keycap">Tab</span>
+            <span class="keycap">Enter</span>
+            <span class="keycap">Space</span>
+          </div>
+        </div>
+        <div class="helper-block konami-helper">
+          <div class="helper-title">Konami keyboard unlock</div>
+          <p id="konamiStatus">Type the classic sequence to unleash turbo snow and neon glow.</p>
+          <div class="key-sequence" aria-label="Konami code keys in order">
+            <span class="keycap">↑</span>
+            <span class="keycap">↑</span>
+            <span class="keycap">↓</span>
+            <span class="keycap">↓</span>
+            <span class="keycap">←</span>
+            <span class="keycap">→</span>
+            <span class="keycap">←</span>
+            <span class="keycap">→</span>
+            <span class="keycap">B</span>
+            <span class="keycap">A</span>
+          </div>
+          <span class="pill tiny" id="konamiBadge">Awaiting code</span>
         </div>
       </div>
     </div>
