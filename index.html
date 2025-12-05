@@ -17,19 +17,32 @@
 
   <div class="tool-row" aria-label="Global controls">
     <button class="action" id="postcardBtn" aria-label="Download postcard screenshot">📸 Screenshot Postcard</button>
-    <button class="settings-toggle" id="settingsToggle" aria-expanded="false" aria-controls="settingsPanel">⚙️ Settings</button>
     <span class="pill ticker">Tip: ornaments work with keyboard too. Secret code? Maybe try classic Konami.</span>
   </div>
 
-  <div id="settingsPanel" class="settings-panel" hidden>
-    <div class="status">
-      <strong>Control Center</strong>
-      <span class="pill tiny">Persisted locally</span>
+  <div class="control-center" id="controlCenter" data-open="false">
+    <button class="control-tab" id="settingsToggle" aria-expanded="false" aria-controls="settingsPanel" aria-label="Open control center">
+      <span>🎛️ Control Center</span>
+    </button>
+    <div id="settingsPanel" class="settings-panel" role="region" aria-label="1990s Christmas Control Center" hidden tabindex="-1">
+      <div class="status">
+        <div>
+          <strong>1990s Christmas Control Center</strong>
+          <p class="muted">WebGL glow, snowfall, slow motion &amp; vibes</p>
+        </div>
+        <div class="status-actions">
+          <span class="pill tiny">Persisted locally</span>
+          <button class="close-panel" id="settingsClose" aria-label="Close control center">✕</button>
+        </div>
+      </div>
+      <div class="control-grid">
+        <label><span>WebGL glow</span><input type="checkbox" id="webglToggle" checked /></label>
+        <label><span>Snowfall</span><input type="checkbox" id="snowToggle" checked /></label>
+        <label><span>Reduced motion</span><input type="checkbox" id="motionToggle" /></label>
+        <label><span>High contrast</span><input type="checkbox" id="contrastToggle" /></label>
+      </div>
+      <div class="control-footnote">Tap an ornament and keep the glitter alive.</div>
     </div>
-    <label><span>WebGL glow</span><input type="checkbox" id="webglToggle" checked /></label>
-    <label><span>Snowfall</span><input type="checkbox" id="snowToggle" checked /></label>
-    <label><span>Reduced motion</span><input type="checkbox" id="motionToggle" /></label>
-    <label><span>High contrast</span><input type="checkbox" id="contrastToggle" /></label>
   </div>
 
   <div class="grid">
