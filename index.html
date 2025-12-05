@@ -408,6 +408,54 @@
       grid-template-columns: 1fr 1fr;
     }
 
+    .tracklist {
+      display: grid;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .track-card {
+      border: 2px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: rgba(17, 5, 29, 0.8);
+      box-shadow: 0 0 10px rgba(255, 179, 71, 0.28);
+      display: grid;
+      gap: 4px;
+    }
+
+    .track-card h4 {
+      margin: 0;
+      color: #ffe9c2;
+    }
+
+    .track-meta {
+      color: #f8e1ff;
+      font-size: 0.9rem;
+    }
+
+    .track-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .track-actions a {
+      color: #ffe900;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .player-frame {
+      border: 2px solid #ffb347;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 16px rgba(255, 179, 71, 0.4);
+      aspect-ratio: 16 / 9;
+      background: #0f0700;
+    }
+
     .ticker {
       display: block;
       font-size: 0.9rem;
@@ -511,7 +559,7 @@
       },
       jukebox: {
         title: "Jingle Jukebox",
-        description: "Pick a 90s-inspired jingle mood and watch the background go full neon candy-cane.",
+        description: "Pick a 90s-inspired jingle mood, cue the holiday mix tape, and watch the background go full neon candy-cane.",
         background: "radial-gradient(circle at 50% 40%, #402600, #0f0700 70%), repeating-linear-gradient(0deg, #664000 0, #664000 10px, #0f0700 10px, #0f0700 18px)",
         accent: "#ffb347",
         render: renderJukebox,
@@ -767,13 +815,15 @@
         <div class="status" style="border-color:${accent}; box-shadow:0 0 12px ${accent};">
           <span>🎶</span><strong>Jingle Jukebox</strong>
         </div>
-        <p>Pick a vibe and the whole background morphs like a GIF from 1997.</p>
+        <p>Pick a vibe and the whole background morphs like a GIF from 1997. Now featuring real 90s holiday bops via YouTube embeds!</p>
         <div class="control-row">
           <button class="action" id="shuffleJukebox">SHUFFLE VIBE</button>
           <span class="pill">Changes also tint the tree lights ✨</span>
         </div>
         <div class="jukebox-preview" id="jukeboxPreview"></div>
         <div class="jukebox" id="jukeboxGrid"></div>
+        <div class="tracklist" id="trackList"></div>
+        <div class="player-frame" id="playerFrame"></div>
         <div class="mono" id="jukeboxLog">Pro tip: stack vibes for maximum chaos.</div>
       `;
 
@@ -804,6 +854,8 @@
       const log = document.getElementById("jukeboxLog");
       const shuffle = document.getElementById("shuffleJukebox");
       const preview = document.getElementById("jukeboxPreview");
+      const trackList = document.getElementById("trackList");
+      const playerFrame = document.getElementById("playerFrame");
       preview.style.background = document.body.style.background || vibes[0].bg;
 
       vibes.forEach(vibe => {
@@ -825,6 +877,71 @@
         document.body.style.background = vibe.bg;
         preview.style.background = vibe.bg;
         log.textContent = `${vibe.name} shuffle drop — remixing the glow!`;
+      });
+
+      const tracks = [
+        {
+          title: "All I Want for Christmas Is You",
+          artist: "Mariah Carey",
+          year: 1994,
+          note: "The supreme 90s mall anthem.",
+          youtube: "https://www.youtube.com/watch?v=yXQViqx6GMY",
+          embed: "https://www.youtube.com/embed/yXQViqx6GMY?autoplay=1",
+        },
+        {
+          title: "Merry Christmas, Happy Holidays",
+          artist: "*NSYNC",
+          year: 1998,
+          note: "Boy band harmonies meet snow machines.",
+          youtube: "https://www.youtube.com/watch?v=wKj92352UAE",
+          embed: "https://www.youtube.com/embed/wKj92352UAE?autoplay=1",
+        },
+        {
+          title: "Sleigh Ride",
+          artist: "TLC",
+          year: 1993,
+          note: "R&B sleigh bells with peak 90s swagger.",
+          youtube: "https://www.youtube.com/watch?v=ke2Gcp46rHU",
+          embed: "https://www.youtube.com/embed/ke2Gcp46rHU?autoplay=1",
+        },
+        {
+          title: "Christmas Wrapping",
+          artist: "Spice Girls",
+          year: 1998,
+          note: "Girl power, holiday edition.",
+          youtube: "https://www.youtube.com/watch?v=R-KBuSgWFEI",
+          embed: "https://www.youtube.com/embed/R-KBuSgWFEI?autoplay=1",
+        },
+        {
+          title: "This Christmas",
+          artist: "98 Degrees",
+          year: 1999,
+          note: "Boy-band slow jam for cocoa mode.",
+          youtube: "https://www.youtube.com/watch?v=0rYzcn7_h3s",
+          embed: "https://www.youtube.com/embed/0rYzcn7_h3s?autoplay=1",
+        },
+      ];
+
+      tracks.forEach(track => {
+        const card = document.createElement("div");
+        card.className = "track-card";
+        card.innerHTML = `
+          <h4>${track.title}</h4>
+          <div class="track-meta">${track.artist} • ${track.year}</div>
+          <div class="track-meta">${track.note}</div>
+          <div class="track-actions">
+            <button class="action" data-embed="${track.embed}">Play inline ▶️</button>
+            <a href="${track.youtube}" target="_blank" rel="noopener">Open on YouTube ↗</a>
+          </div>
+        `;
+
+        card.querySelector("button").addEventListener("click", (e) => {
+          const src = e.currentTarget.getAttribute("data-embed");
+          playerFrame.innerHTML = `<iframe width="100%" height="100%" src="${src}" title="YouTube player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+          log.textContent = `Now streaming: ${track.title} — ${track.artist}`;
+        });
+
+        trackList.appendChild(card);
       });
     }
   </script>
