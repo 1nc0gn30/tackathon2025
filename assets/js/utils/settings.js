@@ -13,6 +13,19 @@ export const initSettings = ({ onSnowToggle, onWebglToggle, onMotionToggle }) =>
   const motionToggle = document.getElementById('motionToggle');
   const contrastToggle = document.getElementById('contrastToggle');
 
+  const closePanel = () => {
+    dom.controlCenter.classList.remove('is-open');
+    dom.settingsPanel.setAttribute('hidden', '');
+    dom.settingsToggle.setAttribute('aria-expanded', 'false');
+  };
+
+  const openPanel = () => {
+    dom.controlCenter.classList.add('is-open');
+    dom.settingsPanel.removeAttribute('hidden');
+    dom.settingsToggle.setAttribute('aria-expanded', 'true');
+    dom.settingsPanel.focus();
+  };
+
   const sync = () => {
     webglToggle.checked = preferences.webgl;
     snowToggle.checked = preferences.snowfall;
@@ -24,9 +37,18 @@ export const initSettings = ({ onSnowToggle, onWebglToggle, onMotionToggle }) =>
   sync();
 
   dom.settingsToggle.addEventListener('click', () => {
-    const open = dom.settingsPanel.hasAttribute('hidden');
-    dom.settingsPanel.toggleAttribute('hidden');
-    dom.settingsToggle.setAttribute('aria-expanded', String(open));
+    const open = !dom.controlCenter.classList.contains('is-open');
+    if (open) openPanel();
+    else closePanel();
+  });
+
+  dom.settingsClose?.addEventListener('click', closePanel);
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && dom.controlCenter.classList.contains('is-open')) {
+      closePanel();
+      dom.settingsToggle.focus({ preventScroll: true });
+    }
   });
 
   webglToggle.addEventListener('change', () => {
