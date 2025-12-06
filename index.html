@@ -3,137 +3,510 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>1990s Christmas Portal — Production Arcade</title>
-  <link rel="stylesheet" href="assets/css/main.css" />
-  <link rel="stylesheet" href="assets/css/tree.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+  <title>Netlify Agent Runner Portal — Concept</title>
+  <style>
+    :root {
+      --bg: #05070d;
+      --panel: #0e1220;
+      --panel-strong: #10182c;
+      --card: #12182a;
+      --accent: #2ee6a6;
+      --accent-2: #51d8ff;
+      --muted: #9fb4c9;
+      --text: #e9f1fb;
+      --border: #1f2b3d;
+      --shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+      --radius: 14px;
+      --glow: 0 0 0 1px rgba(46, 230, 166, 0.25), 0 20px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", "SF Pro Display", "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 20% 10%, rgba(81, 216, 255, 0.06), transparent 35%),
+        radial-gradient(circle at 80% 20%, rgba(46, 230, 166, 0.1), transparent 45%),
+        radial-gradient(circle at 50% 60%, rgba(29, 64, 116, 0.25), rgba(5, 7, 13, 1) 65%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 28px clamp(12px, 3vw, 24px) 48px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, rgba(18, 27, 46, 0.9), rgba(13, 24, 43, 0.85));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      backdrop-filter: blur(6px);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(1.2rem, 2vw, 1.8rem);
+      letter-spacing: 0.5px;
+    }
+
+    header .badge-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(46, 230, 166, 0.12);
+      color: var(--text);
+      border: 1px solid rgba(46, 230, 166, 0.35);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .panel, .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .card {
+      background: var(--card);
+    }
+
+    .panel h2, .card h3 {
+      margin: 0 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.05rem;
+    }
+
+    p {
+      color: var(--muted);
+      margin: 0 0 12px;
+      line-height: 1.6;
+    }
+
+    .login-panel {
+      display: grid;
+      gap: 12px;
+    }
+
+    .input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #0c1322;
+      color: var(--text);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(46, 230, 166, 0.6);
+      background: linear-gradient(135deg, #1a2f42, #12302c);
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--glow);
+    }
+
+    .note {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .site-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #47ffb5;
+      box-shadow: 0 0 12px rgba(71, 255, 181, 0.8);
+    }
+
+    .pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(81, 216, 255, 0.12);
+      color: var(--text);
+      border: 1px solid rgba(81, 216, 255, 0.3);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .terminal {
+      background: #070b14;
+      border: 1px solid #1b2537;
+      border-radius: var(--radius);
+      padding: 14px;
+      font-family: "SFMono-Regular", "Consolas", monospace;
+      color: #c8f4ff;
+      min-height: 220px;
+      display: grid;
+      gap: 10px;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.4), var(--shadow);
+    }
+
+    .terminal .header {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .terminal pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.5;
+    }
+
+    .role-card {
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .role-card h4 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 8px;
+      color: var(--muted);
+    }
+
+    .list li::before {
+      content: "→";
+      color: var(--accent);
+      margin-right: 8px;
+    }
+
+    .chip-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      padding: 6px 10px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px dashed var(--border);
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+      margin: 14px 0;
+    }
+
+    .highlight {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .actions {
+      display: grid;
+      gap: 10px;
+    }
+
+    .action-btn {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(46, 230, 166, 0.08), rgba(81, 216, 255, 0.05));
+      color: var(--text);
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--glow);
+    }
+
+    .action-btn span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 960px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
 </head>
-<body class="crt-shell">
-  <div class="retro-grid" aria-hidden="true"></div>
-  <header>🌲 TACKY CHRISTMAS PORTAL — 1990s EDITION 🌲</header>
-  <marquee scrollamount="8" aria-label="Holiday news ticker">
-    WELCOME TO THE HACKATHON NORTH POLE NETZONE • DOUBLE-CLICK EVERYTHING • EAT VIRTUAL COOKIES • WIN VIRTUAL GLORY
-  </marquee>
+<body>
+  <header>
+    <h1>Netlify Agent Runner Portal — Concept</h1>
+    <div class="badge-row">
+      <span class="badge">Agent Runners as Workflow Guards</span>
+      <span class="badge">Netlify CLI mediated by AI</span>
+      <span class="badge">Client-safe production controls</span>
+    </div>
+  </header>
 
-  <div class="tool-row" aria-label="Global controls">
-    <button class="action" id="postcardBtn" aria-label="Download postcard screenshot">📸 Screenshot Postcard</button>
-    <span class="pill ticker">Tip: ornaments work with keyboard too. Secret code? Maybe try classic Konami.</span>
+  <div class="layout">
+    <section class="panel" aria-labelledby="login-title">
+      <h2 id="login-title">Login & Access Gate</h2>
+      <p>Authentication gates every Netlify CLI and AI Agent request. Credentials are verified before an Agent Runner is allowed to broker a command.</p>
+      <div class="login-panel">
+        <input class="input" type="email" placeholder="work-email@company.com" aria-label="Email" />
+        <input class="input" type="password" placeholder="Password" aria-label="Password" />
+        <button class="btn" aria-label="Login">Login &amp; unlock governed workflows</button>
+        <p class="note">Agents hold the keys. The UI never touches production credentials directly.</p>
+      </div>
+      <div class="divider"></div>
+      <div class="chip-row">
+        <div class="chip">SSO + role enforcement</div>
+        <div class="chip">Audit every Agent action</div>
+        <div class="chip">Scoped environment tokens</div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="context-title">
+      <h2 id="context-title">Concept Overview</h2>
+      <p class="highlight">Agent Runners sit between people and the Netlify CLI. They translate prompts into vetted, reproducible operations with least-privilege access.</p>
+      <p>Developers define allow-lists, guardrails, and prompts. Clients trigger approved actions without ever touching raw CLI commands. Production sites stay safe, while workflows become programmable.</p>
+      <div class="chip-row">
+        <div class="chip">Programmable policies</div>
+        <div class="chip">CLI proxy with human-readable intent</div>
+        <div class="chip">Replayable, explainable history</div>
+      </div>
+    </section>
   </div>
 
-  <div class="control-center" id="controlCenter" data-open="false">
-    <button class="control-tab" id="settingsToggle" aria-expanded="false" aria-controls="settingsPanel" aria-label="Open control center">
-      <span>🎛️ Control Center</span>
-    </button>
-    <div id="settingsPanel" class="settings-panel" role="region" aria-label="1990s Christmas Control Center" hidden tabindex="-1">
-      <div class="status">
-        <div>
-          <strong>1990s Christmas Control Center</strong>
-          <p class="muted">WebGL glow, snowfall, slow motion &amp; vibes</p>
+  <div class="grid" style="margin-top: 18px;">
+    <div class="grid two">
+      <section class="card" aria-labelledby="sites-title">
+        <h3 id="sites-title">Connected Netlify Sites</h3>
+        <p>Production and preview environments surfaced with Agent awareness. Each action below is executed by an Agent Runner, never directly by the user.</p>
+        <div class="site-row">
+          <div>
+            <strong>marketing-site.netlify.app</strong>
+            <p class="note">Environment: production</p>
+          </div>
+          <span class="pill">Protected</span>
+          <span class="status-dot" aria-label="Live"></span>
         </div>
-        <div class="status-actions">
-          <span class="pill tiny">Persisted locally</span>
-          <button class="close-panel" id="settingsClose" aria-label="Close control center">✕</button>
+        <div class="site-row">
+          <div>
+            <strong>launch-preview.netlify.app</strong>
+            <p class="note">Environment: preview</p>
+          </div>
+          <span class="pill" style="background: rgba(81,216,255,0.12); border-color: rgba(81,216,255,0.35);">Safe for clients</span>
+          <span class="status-dot" style="background: #ffd166; box-shadow: 0 0 12px rgba(255, 209, 102, 0.8);" aria-label="Preview"></span>
         </div>
-      </div>
-      <div class="control-grid">
-        <label><span>WebGL glow</span><input type="checkbox" id="webglToggle" checked /></label>
-        <label><span>Snowfall</span><input type="checkbox" id="snowToggle" checked /></label>
-        <label><span>Reduced motion</span><input type="checkbox" id="motionToggle" /></label>
-        <label><span>High contrast</span><input type="checkbox" id="contrastToggle" /></label>
-      </div>
-      <div class="control-footnote">Tap an ornament and keep the glitter alive.</div>
+      </section>
+
+      <section class="card" aria-labelledby="actions-title">
+        <h3 id="actions-title">AI Agent Runner Actions</h3>
+        <div class="actions">
+          <button class="action-btn" data-action="deploy" aria-label="Ask AI Agent to deploy site">
+            <div>
+              <strong>Ask AI Agent to deploy site</strong>
+              <span>Agent validates branch, context, and approvals before calling <code>netlify deploy --prod</code>.</span>
+            </div>
+            <span class="pill">Guarded</span>
+          </button>
+          <button class="action-btn" data-action="status" aria-label="Run safe Netlify CLI check">
+            <div>
+              <strong>Run safe Netlify CLI check</strong>
+              <span>Read-only diagnostics via <code>netlify status</code> proxied through the Agent.</span>
+            </div>
+            <span class="pill">Non-destructive</span>
+          </button>
+          <button class="action-btn" data-action="explain" aria-label="Explain last deploy failure">
+            <div>
+              <strong>Explain last deploy failure</strong>
+              <span>AI reviews build logs, correlates deploy IDs, and renders a client-safe summary.</span>
+            </div>
+            <span class="pill">AI Insight</span>
+          </button>
+        </div>
+        <p class="note">Buttons map to prompts &amp; allow-listed CLI verbs. Agents enforce intent before execution.</p>
+      </section>
     </div>
+
+    <section class="panel" aria-labelledby="terminal-title">
+      <div class="terminal">
+        <div class="header">
+          <span id="terminal-title">Netlify CLI Proxy (Agent mediated)</span>
+          <span class="pill">Approved operations only</span>
+        </div>
+        <pre id="terminal-output">$ Agent Runner ready. Waiting for an approved action...</pre>
+        <p class="note">Commands shown here run server-side by Netlify Agents with scoped tokens. Users never receive raw credentials.</p>
+      </div>
+    </section>
   </div>
 
-  <div class="grid">
-    <div class="tree-wrap panel">
-      <div class="lights" aria-hidden="true">
-        <div class="bulb"></div>
-        <div class="bulb"></div>
-        <div class="bulb"></div>
-        <div class="bulb"></div>
-        <div class="bulb"></div>
-      </div>
-      <div class="tree-space parallax-tilt" aria-label="Tree zone with ornaments" tabindex="-1">
-        <div class="tree-floor" aria-hidden="true"></div>
-        <div class="tree-aurora" aria-hidden="true"></div>
-        <div class="tree" aria-label="Retro Christmas Tree">
-          <div class="star" aria-hidden="true">✸</div>
-          <div class="layer"></div>
-          <div class="layer"></div>
-          <div class="layer"></div>
-          <div class="garland" aria-hidden="true"></div>
-          <div class="sparkles" aria-hidden="true"></div>
-          <div class="trunk" aria-hidden="true"></div>
-          <div class="glow-base" aria-hidden="true"></div>
-          <button class="ornament" data-id="snow" data-label="Snow Console" aria-label="Open Snow Console">❄️</button>
-          <button class="ornament" data-id="react" data-label="Elf Reaction" aria-label="Open Elf Reaction Lab">🎄</button>
-          <button class="ornament" data-id="hunt" data-label="Present Hunt" aria-label="Open Present Hunt">🎁</button>
-          <button class="ornament" data-id="theater" data-label="Retro Theater" aria-label="Open Retro Movie Theater">🎬</button>
-          <button class="ornament" data-id="jukebox" data-label="Jingle Box" aria-label="Open Jingle Jukebox">🎶</button>
+  <div class="grid two" style="margin-top: 18px;">
+    <section class="card" aria-labelledby="roles-title">
+      <h3 id="roles-title">Client vs Developer Roles</h3>
+      <div class="grid two">
+        <div class="role-card">
+          <h4>Client / Partner View</h4>
+          <ul class="list">
+            <li>Trigger pre-approved deployments</li>
+            <li>Request AI summaries of incidents</li>
+            <li>Check production status without secrets</li>
+          </ul>
+          <p class="note">No shell access. Every click becomes an Agent-mediated prompt.</p>
+        </div>
+        <div class="role-card">
+          <h4>Developer / Admin View</h4>
+          <ul class="list">
+            <li>Define allow-listed CLI verbs</li>
+            <li>Author AI prompts exposed to clients</li>
+            <li>Scope tokens to environments and sites</li>
+          </ul>
+          <p class="note">Developers turn the CLI into governed automation instead of ad-hoc terminals.</p>
         </div>
       </div>
+    </section>
 
-      <div class="tree-helper" aria-live="polite">
-        <div class="helper-block">
-          <h3>Tree controls</h3>
-          <p>Tab through ornaments, hit Enter to open a mini-game, or double-click them for maximum sparkle.</p>
-          <div class="key-row" aria-hidden="true">
-            <span class="keycap">Tab</span>
-            <span class="keycap">Enter</span>
-            <span class="keycap">Space</span>
-          </div>
-        </div>
-        <div class="helper-block konami-helper">
-          <div class="helper-title">Konami keyboard unlock</div>
-          <p id="konamiStatus">Type the classic sequence to unleash turbo snow and neon glow.</p>
-          <div class="key-sequence" aria-label="Konami code keys in order">
-            <span class="keycap">↑</span>
-            <span class="keycap">↑</span>
-            <span class="keycap">↓</span>
-            <span class="keycap">↓</span>
-            <span class="keycap">←</span>
-            <span class="keycap">→</span>
-            <span class="keycap">←</span>
-            <span class="keycap">→</span>
-            <span class="keycap">B</span>
-            <span class="keycap">A</span>
-          </div>
-          <span class="pill tiny" id="konamiBadge">Awaiting code</span>
-        </div>
+    <section class="card" aria-labelledby="governance-title">
+      <h3 id="governance-title">Workflow Guardrails</h3>
+      <p class="note">Agent Runners evaluate policies before touching the CLI. Clients see intent, not commands.</p>
+      <div class="chip-row">
+        <div class="chip">Allow: <code>netlify status</code></div>
+        <div class="chip">Allow: <code>netlify deploy --prod</code></div>
+        <div class="chip">Prompt: "Explain last deploy failure"</div>
       </div>
-    </div>
-
-    <div class="panel" id="gamePanel">
-      <div class="arcade-head">
-        <h2 aria-live="polite">🎮 Elf Arcade Hub</h2>
-        <span class="arcade-sticker" aria-hidden="true">1996 NORTH POLE</span>
-      </div>
-      <p>Choose an ornament to beam a mini-game into this glowing panel. Everything is tacky on purpose — now with bonus 90s mall Santa energy.</p>
-      <div class="arcade-rail" aria-label="Elf arcade vibe controls">
-        <div class="rail-stack">
-          <div class="pill ticker">Elf Hotline: 1-800-RETRO-XMAS • VHS rewards unlocked when cheer is high!</div>
-          <div class="cheer-meter">
-            <label for="cheerRange">Cheer meter</label>
-            <input id="cheerRange" type="range" min="6" max="36" value="18" aria-describedby="cheerOutput" />
-            <output id="cheerOutput" class="pill tiny">Mall Santa Mode</output>
-          </div>
-        </div>
-        <div class="vibe-buttons" role="group" aria-label="Choose a 1990s vibe">
-          <button class="action vibe-btn" data-vibe="mall">🛍️ Mall Santa Mix</button>
-          <button class="action vibe-btn" data-vibe="cable">📺 Cable Special</button>
-          <button class="action vibe-btn" data-vibe="snowed">❄️ Blizzard LAN Party</button>
-        </div>
-      </div>
-      <div class="arcade-ticker" id="arcadeTicker" aria-live="polite">Dialed into mall fountain acoustics. Glitter levels nominal.</div>
-      <div class="game-area" id="gameArea" aria-live="polite"></div>
-    </div>
+      <div class="divider"></div>
+      <p class="highlight">Result: Reduced client-side risk + faster developer response times.</p>
+      <p>Think: Netlify Dashboard → Add-Ons → Agent Runners. A new layer for governed automation atop hosting + deploys.</p>
+    </section>
   </div>
 
-  <footer>Crafted with 1990s joy &amp; neon — Hackathon 2025</footer>
-  <div class="snowfall-layer" id="snowfallLayer" aria-hidden="true"></div>
-  <canvas id="webglCanvas" class="snowfall-layer" aria-hidden="true"></canvas>
+  <section class="panel" style="margin-top: 18px;" aria-labelledby="narrative-title">
+    <h2 id="narrative-title">Narrative</h2>
+    <p>Agent Runners convert natural language into safe Netlify CLI operations. Developers ship policies once; clients trigger them with confidence. Every action is auditable, replayable, and reversible through the Agent.</p>
+    <p class="note">This prototype is a vision for a future Netlify Add-On: AI-mediated workflow guards that extend Netlify beyond deploy + host into governed automation.</p>
+  </section>
 
-  <script type="module" src="assets/js/main.js"></script>
+  <script>
+    const terminalOutput = document.getElementById('terminal-output');
+
+    function appendTerminal(line) {
+      const existing = terminalOutput.textContent;
+      terminalOutput.textContent = `${existing}\n$ ${line}`;
+    }
+
+    function runAgent(prompt) {
+      // Future: this would call the Netlify AI Agent Runner backend with a prompt.
+      // The Agent would validate intent, map to allowed CLI commands, and run them server-side.
+      appendTerminal(`Agent processing: "${prompt}"`);
+    }
+
+    function runNetlifyCLI(action) {
+      // Future: Netlify CLI invocation occurs on the server with scoped tokens.
+      // The Agent mediates execution to keep production credentials off the client.
+      appendTerminal(`netlify ${action}`);
+    }
+
+    const actionButtons = document.querySelectorAll('.action-btn');
+    actionButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const action = btn.dataset.action;
+        if (action === 'deploy') {
+          runAgent('Deploy production branch via Agent Runner');
+          runNetlifyCLI('deploy --prod');
+          appendTerminal('Result: queued deployment with pre-flight policy checks.');
+        }
+        if (action === 'status') {
+          runAgent('Check Netlify site health');
+          runNetlifyCLI('status');
+          appendTerminal('Result: status streamed back as read-only summary.');
+        }
+        if (action === 'explain') {
+          runAgent('Explain last deploy failure for marketing-site');
+          appendTerminal('Result: AI summary generated from build logs and deploy ID.');
+        }
+      });
+    });
+  </script>
 </body>
 </html>
