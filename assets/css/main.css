@@ -36,6 +36,46 @@ body {
   position: relative;
 }
 
+.festive-sky {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.festive-aura,
+.festive-ribbons,
+.festive-stars {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: screen;
+  opacity: 0.22;
+}
+
+.festive-aura {
+  background: radial-gradient(circle at 18% 20%, rgba(255, 68, 140, 0.28), transparent 36%),
+    radial-gradient(circle at 80% 10%, rgba(0, 255, 204, 0.22), transparent 45%),
+    radial-gradient(circle at 45% 80%, rgba(255, 214, 102, 0.16), transparent 38%);
+  filter: blur(8px);
+  animation: floaty 18s ease-in-out infinite alternate;
+}
+
+.festive-ribbons {
+  background: conic-gradient(from 120deg, rgba(0, 255, 178, 0.18), rgba(255, 255, 255, 0.05), rgba(255, 63, 111, 0.14));
+  mask-image: radial-gradient(circle at 50% 40%, black 30%, transparent 62%);
+  animation: ribbonSpin 26s linear infinite;
+}
+
+.festive-stars {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.65) 2px, transparent 0),
+    radial-gradient(rgba(255, 255, 255, 0.35) 1px, transparent 0);
+  background-size: 140px 140px, 200px 200px;
+  background-position: 20px 30px, 80px 100px;
+  opacity: 0.35;
+  animation: starDrift 40s linear infinite;
+}
+
 body.home-mode .tool-row,
 body.home-mode .control-center,
 body.home-mode #gamePanel,
@@ -650,6 +690,12 @@ body.vibe-snowed {
   opacity: 0;
 }
 
+.three-layer {
+  z-index: 1;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.08));
+}
+
 .snowflake {
   position: absolute;
   top: -20px;
@@ -878,6 +924,10 @@ footer {
   margin-top: 12px;
 }
 
+.santa-deep-grid {
+  align-items: stretch;
+}
+
 .santa-card {
   background: rgba(255, 255, 255, 0.04);
   border-radius: 12px;
@@ -926,6 +976,29 @@ footer {
   filter: saturate(1.2) contrast(1.05);
 }
 
+.norad-frame {
+  border-radius: 14px;
+  border: 2px solid rgba(19, 194, 255, 0.4);
+  background: linear-gradient(135deg, rgba(19, 194, 255, 0.14), rgba(255, 255, 255, 0.04));
+  overflow: hidden;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35), 0 0 30px rgba(19, 194, 255, 0.25);
+  height: 260px;
+}
+
+.norad-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #02070e;
+}
+
+.santa-feed-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
 .santa-route {
   display: grid;
   gap: 8px;
@@ -962,6 +1035,91 @@ footer {
   border-radius: 12px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(19, 194, 255, 0.12));
   border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.santa-atmosphere {
+  position: relative;
+  margin-top: 8px;
+  border-radius: 14px;
+  overflow: hidden;
+  height: 120px;
+  background: linear-gradient(135deg, rgba(13, 31, 27, 0.9), rgba(5, 12, 22, 0.85));
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.santa-atmosphere > div {
+  position: absolute;
+  inset: 0;
+}
+
+.santa-aurora {
+  background: radial-gradient(circle at 20% 50%, rgba(57, 255, 20, 0.25), transparent 40%),
+    radial-gradient(circle at 70% 40%, rgba(19, 194, 255, 0.35), transparent 45%),
+    radial-gradient(circle at 50% 90%, rgba(255, 255, 255, 0.16), transparent 40%);
+  filter: blur(10px);
+  animation: auroraDrift 18s ease-in-out infinite alternate;
+}
+
+.santa-lights-trail {
+  background: linear-gradient(120deg, rgba(255, 108, 171, 0.25), rgba(0, 255, 176, 0.2));
+  mask-image: linear-gradient(90deg, transparent 0, black 10%, black 90%, transparent 100%);
+  transform: translateY(-10%);
+  opacity: 0.6;
+  animation: twinkleSlide 12s linear infinite;
+}
+
+.santa-flakes {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.9) 2px, transparent 0),
+    radial-gradient(rgba(255, 255, 255, 0.6) 1px, transparent 0);
+  background-size: 120px 120px, 80px 80px;
+  background-position: 0 0, 40px 20px;
+  animation: snowDance 22s linear infinite;
+  opacity: 0.45;
+}
+
+.santa-directory {
+  position: relative;
+  overflow: hidden;
+}
+
+.santa-directory::before {
+  content: '';
+  position: absolute;
+  inset: -10px;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.06), transparent 45%),
+    radial-gradient(circle at 80% 80%, rgba(57, 255, 20, 0.06), transparent 35%);
+  z-index: 0;
+}
+
+.santa-link-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.santa-link-card {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #e8fff2;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(19, 194, 255, 0.08));
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.4);
+}
+
+.santa-link-card:hover {
+  border-color: var(--active-accent);
+  box-shadow: 0 0 16px rgba(57, 255, 20, 0.25);
+}
+
+.santa-link-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .floating-tree-btn {
@@ -1071,6 +1229,51 @@ footer {
   }
 }
 
+@keyframes floaty {
+  to {
+    transform: translateY(-10px) scale(1.04);
+  }
+}
+
+@keyframes ribbonSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes starDrift {
+  to {
+    background-position: 140px 140px, 120px 180px;
+  }
+}
+
+@keyframes auroraDrift {
+  0% {
+    transform: translateX(-5%) scale(1);
+  }
+  100% {
+    transform: translateX(5%) scale(1.03);
+  }
+}
+
+@keyframes twinkleSlide {
+  0% {
+    transform: translate(-10%, -12%);
+  }
+  100% {
+    transform: translate(6%, -8%);
+  }
+}
+
+@keyframes snowDance {
+  0% {
+    background-position: 0 0, 40px 20px;
+  }
+  100% {
+    background-position: 0 90px, 40px 110px;
+  }
+}
+
 @media (max-width: 940px) {
   .grid {
     grid-template-columns: 1fr;
@@ -1086,6 +1289,9 @@ footer {
     grid-template-columns: 1fr;
   }
   .santa-grid {
+    grid-template-columns: 1fr;
+  }
+  .santa-deep-grid {
     grid-template-columns: 1fr;
   }
 }

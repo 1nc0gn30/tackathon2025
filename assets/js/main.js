@@ -5,6 +5,7 @@ import { initParallax } from './effects/parallax.js';
 import { initKonami } from './effects/konami.js';
 import { startSnowfall, stopSnowfall } from './effects/snowfall.js';
 import { initGlow, stopGlow } from './effects/webglGlow.js';
+import { initThreeScene, stopThreeScene } from './effects/threeScene.js';
 import { initScreenshot } from './utils/screenshot.js';
 import { initSettings } from './utils/settings.js';
 import { SnowConsole } from './games/snowConsole.js';
@@ -74,6 +75,28 @@ const vibeClasses = Object.values(vibeThemes).map((v) => v.className);
 let activeVibe = 'mall';
 let currentGame = 'snow';
 let hasEnteredArcade = false;
+const defaultBackground = getComputedStyle(document.body).background;
+
+const haltActiveMedia = () => {
+  if (dom.gameArea) {
+    dom.gameArea.querySelectorAll('iframe').forEach((frame) => {
+      frame.src = 'about:blank';
+      frame.remove();
+    });
+
+    dom.gameArea.querySelectorAll('video, audio').forEach((media) => {
+      media.pause?.();
+      media.currentTime = 0;
+      media.removeAttribute('src');
+      media.load?.();
+    });
+
+    dom.gameArea.innerHTML = '';
+  }
+
+  document.querySelectorAll('.modal-overlay').forEach((overlay) => overlay.remove());
+  dom.body.style.background = defaultBackground;
+};
 
 const hideTreeForArcade = () => {
   dom.body.classList.add('tree-hidden');
@@ -83,6 +106,7 @@ const hideTreeForArcade = () => {
 const showTreeView = () => {
   dom.body.classList.remove('tree-hidden');
   dom.body.classList.add('home-mode');
+   haltActiveMedia();
   hasEnteredArcade = false;
   dom.treeReturnBtn?.setAttribute('hidden', '');
   dom.treeWrap?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -105,6 +129,7 @@ const applyAccent = () => {
 
 const activateGame = (id) => {
   cleanupTimers();
+  haltActiveMedia();
   dom.ornaments.forEach((o) => o.classList.toggle('active', o.dataset.id === id));
   currentGame = id;
   applyAccent();
@@ -194,14 +219,20 @@ const boot = () => {
       else stopSnowfall();
     },
     onWebglToggle: (enabled) => {
-      if (enabled) initGlow();
-      else stopGlow();
+      if (enabled) {
+        initGlow();
+        initThreeScene();
+      } else {
+        stopGlow();
+        stopThreeScene();
+      }
     },
     onMotionToggle: (reduced) => applyMotionPreference(reduced),
   });
 
   if (state.preferences.webgl) {
     initGlow();
+    initThreeScene();
   }
   if (state.preferences.snowfall) {
     startSnowfall();

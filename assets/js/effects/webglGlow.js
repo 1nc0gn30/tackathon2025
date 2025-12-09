@@ -89,6 +89,7 @@ export const initGlow = () => {
     if (!gl) throw new Error('WebGL unavailable');
     createProgram();
     resize();
+    dom.webglCanvas.style.opacity = '0.6';
     window.addEventListener('resize', resize);
     animationId = requestAnimationFrame(render);
   } catch (err) {
@@ -100,4 +101,5 @@ export const initGlow = () => {
 export const stopGlow = () => {
   if (animationId) cancelAnimationFrame(animationId);
   if (gl) gl.getExtension('WEBGL_lose_context')?.loseContext();
+  dom.webglCanvas.style.opacity = '0';
 };

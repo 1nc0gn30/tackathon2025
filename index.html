@@ -6,10 +6,16 @@
   <title>1990s Christmas Portal — Production Arcade</title>
   <link rel="stylesheet" href="assets/css/main.css" />
   <link rel="stylesheet" href="assets/css/tree.css" />
+  <script src="https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 </head>
 <body class="crt-shell home-mode">
   <div class="retro-grid" aria-hidden="true"></div>
+  <div class="festive-sky" aria-hidden="true">
+    <div class="festive-aura"></div>
+    <div class="festive-ribbons"></div>
+    <div class="festive-stars"></div>
+  </div>
   <header>🌲 TACKY CHRISTMAS PORTAL — 1990s EDITION 🌲</header>
   <marquee scrollamount="8" aria-label="Holiday news ticker">
     WELCOME TO THE HACKATHON NORTH POLE NETZONE • DOUBLE-CLICK EVERYTHING • EAT VIRTUAL COOKIES • WIN VIRTUAL GLORY
@@ -172,6 +178,7 @@
   <footer>Crafted with 1990s joy &amp; neon — Hackathon 2025</footer>
   <div class="snowfall-layer" id="snowfallLayer" aria-hidden="true"></div>
   <canvas id="webglCanvas" class="snowfall-layer" aria-hidden="true"></canvas>
+  <canvas id="threeCanvas" class="snowfall-layer three-layer" aria-hidden="true"></canvas>
 
   <button class="floating-tree-btn" id="treeReturnBtn" hidden aria-label="Return to tree view">
     <span class="btn-tree-icon" aria-hidden="true">🎄</span>
