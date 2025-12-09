@@ -1,6 +1,7 @@
 .tree-wrap {
   position: relative;
   overflow: visible;
+  backdrop-filter: blur(2px);
 }
 
 .tree-space {
@@ -14,7 +15,7 @@
     linear-gradient(-135deg, rgba(255, 185, 0, 0.08), transparent 28%),
     #05080f;
   border-radius: 18px;
-  box-shadow: inset 0 0 38px rgba(0, 0, 0, 0.65), 0 22px 40px rgba(0, 0, 0, 0.45), var(--shadow);
+  box-shadow: inset 0 0 38px rgba(0, 0, 0, 0.65), 0 22px 40px rgba(0, 0, 0, 0.45), var(--shadow), 0 0 40px rgba(19, 194, 255, 0.1);
   border: 1px solid rgba(57, 255, 20, 0.24);
   isolation: isolate;
 }
@@ -343,6 +344,11 @@
   left: 60%;
 }
 
+.ornament[data-id='santa'] {
+  top: 58%;
+  left: 24%;
+}
+
 .tree-helper {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -409,6 +415,37 @@
   text-transform: uppercase;
   font-size: 0.92rem;
   letter-spacing: 1px;
+}
+
+.home-invite {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.22);
+  background: linear-gradient(135deg, rgba(19, 194, 255, 0.08), rgba(255, 185, 0, 0.08));
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.4);
+}
+
+.home-invite p {
+  margin: 8px 0 6px;
+  color: #e9fff2;
+}
+
+.invite-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(57, 255, 20, 0.22);
+  color: #081015;
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(57, 255, 20, 0.25);
+}
+
+.invite-footnote {
+  color: #b9e3c7;
+  font-size: 0.92rem;
 }
 
 .konami-helper .pill {

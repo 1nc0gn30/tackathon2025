@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="assets/css/tree.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 </head>
-<body class="crt-shell">
+<body class="crt-shell home-mode">
   <div class="retro-grid" aria-hidden="true"></div>
   <header>🌲 TACKY CHRISTMAS PORTAL — 1990s EDITION 🌲</header>
   <marquee scrollamount="8" aria-label="Holiday news ticker">
@@ -45,7 +45,7 @@
     </div>
   </div>
 
-  <div class="grid">
+  <div class="grid" id="holidayGrid">
     <div class="tree-wrap panel">
       <div class="lights" aria-hidden="true">
         <div class="bulb"></div>
@@ -71,6 +71,7 @@
           <button class="ornament" data-id="hunt" data-label="Present Hunt" aria-label="Open Present Hunt">🎁</button>
           <button class="ornament" data-id="theater" data-label="Retro Theater" aria-label="Open Retro Movie Theater">🎬</button>
           <button class="ornament" data-id="jukebox" data-label="Jingle Box" aria-label="Open Jingle Jukebox">🎶</button>
+          <button class="ornament" data-id="santa" data-label="Santa Tracker" aria-label="Open Santa Tracker">🎅</button>
         </div>
       </div>
 
@@ -101,6 +102,12 @@
           </div>
           <span class="pill tiny" id="konamiBadge">Awaiting code</span>
         </div>
+      </div>
+
+      <div class="home-invite" aria-live="polite">
+        <div class="invite-chip">Tap an ornament to enter the arcade</div>
+        <p>Home view keeps the tree front and center. Choose any glittery ornament to unlock the full 90s control room.</p>
+        <div class="invite-footnote">🎄 Same tree, extra sparkle — the next screen adds the arcade, jukebox, and brand-new Santa tracker.</div>
       </div>
     </div>
 
