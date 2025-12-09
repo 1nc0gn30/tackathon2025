@@ -12,6 +12,7 @@ import { ReactionLab } from './games/reactionLab.js';
 import { PresentHunt } from './games/presentHunt.js';
 import { Jukebox } from './games/jukebox.js';
 import { RetroTheater } from './games/theater.js';
+import { SantaTracker } from './games/santaTracker.js';
 
 const controllers = {
   snow: SnowConsole,
@@ -19,6 +20,7 @@ const controllers = {
   hunt: PresentHunt,
   jukebox: Jukebox,
   theater: RetroTheater,
+  santa: SantaTracker,
 };
 
 const accentMap = {
@@ -27,6 +29,7 @@ const accentMap = {
   hunt: '#39ff14',
   jukebox: '#ffb347',
   theater: '#ff718d',
+  santa: '#ffc107',
 };
 
 const hexToRgb = (hex) => {
@@ -70,6 +73,14 @@ const vibeThemes = {
 const vibeClasses = Object.values(vibeThemes).map((v) => v.className);
 let activeVibe = 'mall';
 let currentGame = 'snow';
+let hasEnteredArcade = false;
+
+const enterArcade = () => {
+  if (hasEnteredArcade) return;
+  hasEnteredArcade = true;
+  dom.body.classList.remove('home-mode');
+  setTimeout(() => dom.gamePanel?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
+};
 
 const applyAccent = () => {
   const vibeAccent = vibeThemes[activeVibe]?.accent;
@@ -124,7 +135,10 @@ const initArcadeVibes = () => {
 };
 
 const initInteractions = () => {
-  wireOrnamentAccessibility(activateGame);
+  wireOrnamentAccessibility((id) => {
+    enterArcade();
+    activateGame(id);
+  });
   initParallax();
   initKonami();
   initScreenshot();
