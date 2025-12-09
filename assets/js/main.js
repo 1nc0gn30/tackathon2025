@@ -75,6 +75,18 @@ let activeVibe = 'mall';
 let currentGame = 'snow';
 let hasEnteredArcade = false;
 
+const hideTreeForArcade = () => {
+  dom.body.classList.add('tree-hidden');
+  dom.treeReturnBtn?.removeAttribute('hidden');
+};
+
+const showTreeView = () => {
+  dom.body.classList.remove('tree-hidden');
+  dom.treeReturnBtn?.setAttribute('hidden', '');
+  dom.treeWrap?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setTimeout(() => dom.treeSpace?.focus({ preventScroll: true }), 300);
+};
+
 const enterArcade = () => {
   if (hasEnteredArcade) return;
   hasEnteredArcade = true;
@@ -137,12 +149,14 @@ const initArcadeVibes = () => {
 const initInteractions = () => {
   wireOrnamentAccessibility((id) => {
     enterArcade();
+    hideTreeForArcade();
     activateGame(id);
   });
   initParallax();
   initKonami();
   initScreenshot();
   initArcadeVibes();
+  dom.treeReturnBtn?.addEventListener('click', showTreeView);
 };
 
 const applyMotionPreference = (reduced) => {
