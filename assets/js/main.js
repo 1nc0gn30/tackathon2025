@@ -82,6 +82,8 @@ const hideTreeForArcade = () => {
 
 const showTreeView = () => {
   dom.body.classList.remove('tree-hidden');
+  dom.body.classList.add('home-mode');
+  hasEnteredArcade = false;
   dom.treeReturnBtn?.setAttribute('hidden', '');
   dom.treeWrap?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   setTimeout(() => dom.treeSpace?.focus({ preventScroll: true }), 300);
@@ -146,6 +148,20 @@ const initArcadeVibes = () => {
   applyVibe(activeVibe);
 };
 
+const initTreeScene = () => {
+  if (!dom.treeScene) return;
+
+  const restartAnimation = (className, duration = 1400) => {
+    dom.treeScene.classList.remove(className);
+    void dom.treeScene.offsetWidth;
+    dom.treeScene.classList.add(className);
+    setTimeout(() => dom.treeScene?.classList.remove(className), duration);
+  };
+
+  dom.sceneSnowBtn?.addEventListener('click', () => restartAnimation('scene-burst', 1100));
+  dom.sceneGlowBtn?.addEventListener('click', () => restartAnimation('scene-starlit', 1400));
+};
+
 const initInteractions = () => {
   wireOrnamentAccessibility((id) => {
     enterArcade();
@@ -156,6 +172,7 @@ const initInteractions = () => {
   initKonami();
   initScreenshot();
   initArcadeVibes();
+  initTreeScene();
   dom.treeReturnBtn?.addEventListener('click', showTreeView);
 };
 
