@@ -109,6 +109,38 @@
         <p>Home view keeps the tree front and center. Choose any glittery ornament to unlock the full 90s control room.</p>
         <div class="invite-footnote">🎄 Same tree, extra sparkle — the next screen adds the arcade, jukebox, and brand-new Santa tracker.</div>
       </div>
+
+      <div class="tree-scene" id="treeScene" aria-label="Snowglobe tree scene">
+        <div class="scene-canvas">
+          <div class="scene-aurora"></div>
+          <div class="scene-moon" aria-hidden="true"></div>
+          <div class="scene-hill back" aria-hidden="true"></div>
+          <div class="scene-hill front" aria-hidden="true"></div>
+          <div class="scene-tree" aria-hidden="true">
+            <div class="scene-star">✸</div>
+            <div class="scene-body"></div>
+            <div class="scene-body tier-2"></div>
+            <div class="scene-body tier-3"></div>
+            <div class="scene-lights"></div>
+            <div class="scene-trunk"></div>
+          </div>
+          <div class="scene-snow">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="scene-info">
+          <div>
+            <p class="badge">New</p>
+            <h3>Tree-only scene</h3>
+            <p>Return to the pure tree mode without the arcade panels, and sink into the snowglobe vibes. Tap to spark snow or relight the star.</p>
+          </div>
+          <div class="scene-actions">
+            <button class="action scene-action" id="sceneSnowBtn">❄️ Snow burst</button>
+            <button class="action scene-action" id="sceneGlowBtn">🌟 Glow the star</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="panel" id="gamePanel">
@@ -142,7 +174,14 @@
   <canvas id="webglCanvas" class="snowfall-layer" aria-hidden="true"></canvas>
 
   <button class="floating-tree-btn" id="treeReturnBtn" hidden aria-label="Return to tree view">
-    🎄 Back to tree
+    <span class="btn-tree-icon" aria-hidden="true">🎄</span>
+    <span class="btn-text">
+      <strong>Back to tree</strong>
+      <small>Snowglobe view only</small>
+    </span>
+    <span class="btn-snow" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </span>
   </button>
 
   <script type="module" src="assets/js/main.js"></script>
