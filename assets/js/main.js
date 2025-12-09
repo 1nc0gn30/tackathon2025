@@ -58,24 +58,38 @@ const vibeThemes = {
     accent: '#ff66c4',
     className: 'vibe-mall',
     ticker: 'Dialed into mall fountain acoustics. Glitter levels nominal.',
+    label: 'Mall Santa Mix',
   },
   cable: {
     accent: '#7ee1ff',
     className: 'vibe-cable',
     ticker: 'Tonight on Channel 25: stop-motion elves, toy commercials, and cocoa refills.',
+    label: 'Cable Special',
   },
   snowed: {
     accent: '#13c2ff',
     className: 'vibe-snowed',
     ticker: 'LAN party in the blizzard bunker. Dial-up tones approved by Santa HQ.',
+    label: 'Blizzard LAN Party',
   },
 };
 
 const vibeClasses = Object.values(vibeThemes).map((v) => v.className);
 let activeVibe = 'mall';
-let currentGame = 'snow';
+let currentGame = null;
 let hasEnteredArcade = false;
 const defaultBackground = getComputedStyle(document.body).background;
+const santaKey = 'tacky-santa-cookie';
+let santaModal;
+
+const gameLabels = {
+  snow: 'Snow Console',
+  react: 'Elf Reaction Lab',
+  hunt: 'Present Hunt',
+  jukebox: 'Jingle Jukebox',
+  theater: 'Retro Theater',
+  santa: 'Santa Tracker',
+};
 
 const haltActiveMedia = () => {
   if (dom.gameArea) {
@@ -94,7 +108,7 @@ const haltActiveMedia = () => {
     dom.gameArea.innerHTML = '';
   }
 
-  document.querySelectorAll('.modal-overlay').forEach((overlay) => overlay.remove());
+  document.querySelectorAll('.modal-overlay:not(.santa-modal)').forEach((overlay) => overlay.remove());
   dom.body.style.background = defaultBackground;
 };
 
@@ -125,15 +139,25 @@ const applyAccent = () => {
   const gameAccent = accentMap[currentGame] || '#39ff14';
   const mixedAccent = vibeAccent ? mixColors(gameAccent, vibeAccent) : gameAccent;
   setAccent(mixedAccent);
+  if (dom.arcadeVibeStatus) {
+    const label = vibeThemes[activeVibe]?.label || 'Arcade';
+    dom.arcadeVibeStatus.textContent = `Vibe: ${label}`;
+  }
 };
 
 const activateGame = (id) => {
+  if (currentGame && controllers[currentGame]?.destroy) {
+    controllers[currentGame].destroy();
+  }
   cleanupTimers();
   haltActiveMedia();
   dom.ornaments.forEach((o) => o.classList.toggle('active', o.dataset.id === id));
   currentGame = id;
   applyAccent();
   controllers[id]?.render();
+  if (dom.arcadeNowPlaying) {
+    dom.arcadeNowPlaying.textContent = `Now playing: ${gameLabels[id] || 'Elf Arcade'}`;
+  }
 };
 
 const initArcadeVibes = () => {
@@ -173,6 +197,81 @@ const initArcadeVibes = () => {
   applyVibe(activeVibe);
 };
 
+const initArcadeHelpers = () => {
+  dom.arcadeShuffle?.addEventListener('click', () => {
+    const keys = Object.keys(controllers);
+    const next = keys[Math.floor(Math.random() * keys.length)];
+    enterArcade();
+    hideTreeForArcade();
+    activateGame(next);
+  });
+
+  dom.arcadeFocus?.addEventListener('click', () => {
+    dom.gamePanel?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    dom.gameArea?.focus({ preventScroll: true });
+  });
+};
+
+const setSantaStatus = (answer) => {
+  if (!dom.arcadeSantaStatus) return;
+  if (answer === 'yes') {
+    dom.arcadeSantaStatus.textContent = '🎅 Santa logged your cookies + milk. HO HO HO!';
+  } else if (answer === 'no') {
+    dom.arcadeSantaStatus.textContent = '😢 Santa is sad but respects your diet. Cookies pending.';
+  } else {
+    dom.arcadeSantaStatus.textContent = 'Santa has a cookie question…';
+  }
+};
+
+const closeSantaModal = () => {
+  santaModal?.remove();
+  santaModal = null;
+};
+
+const handleSantaChoice = (answer) => {
+  localStorage.setItem(santaKey, answer);
+  setSantaStatus(answer);
+  const reaction = answer === 'yes' ? 'Ho ho ho! Merry Christmas!' : 'Oh no! Santa will pout until cookies appear.';
+  const emoji = answer === 'yes' ? '🎅✨' : '🎅🥺';
+  const message = santaModal?.querySelector('.santa-line');
+  if (message) {
+    message.textContent = `${emoji} ${reaction}`;
+  }
+  setTimeout(closeSantaModal, 1400);
+};
+
+const initSantaPrompt = () => {
+  const previous = localStorage.getItem(santaKey);
+  setSantaStatus(previous);
+  if (previous) return;
+
+  setTimeout(() => {
+    santaModal = document.createElement('div');
+    santaModal.className = 'modal-overlay santa-modal';
+    santaModal.innerHTML = `
+      <div class="santa-card" role="dialog" aria-label="Santa cookie request" aria-modal="true">
+        <div class="santa-top">
+          <span class="santa-emoji" aria-hidden="true">🎅</span>
+          <div>
+            <p class="santa-title">Santa's Cookie Consent</p>
+            <p class="santa-line">May Santa snag cookies & milk while you play?</p>
+          </div>
+          <button class="close-modal" aria-label="Dismiss Santa" id="santaClose">✕</button>
+        </div>
+        <div class="santa-actions">
+          <button class="action" data-answer="no">No, sorry</button>
+          <button class="action loud" data-answer="yes">Yes! Please</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(santaModal);
+    santaModal.querySelectorAll('[data-answer]').forEach((btn) =>
+      btn.addEventListener('click', () => handleSantaChoice(btn.dataset.answer))
+    );
+    santaModal.querySelector('#santaClose')?.addEventListener('click', closeSantaModal);
+  }, 1600);
+};
+
 const initTreeScene = () => {
   if (!dom.treeScene) return;
 
@@ -197,6 +296,7 @@ const initInteractions = () => {
   initKonami();
   initScreenshot();
   initArcadeVibes();
+  initArcadeHelpers();
   initTreeScene();
   dom.treeReturnBtn?.addEventListener('click', showTreeView);
 };
@@ -212,6 +312,7 @@ const applyMotionPreference = (reduced) => {
 
 const boot = () => {
   initInteractions();
+  initSantaPrompt();
 
   initSettings({
     onSnowToggle: (enabled) => {

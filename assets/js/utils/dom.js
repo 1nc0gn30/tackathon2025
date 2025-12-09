@@ -21,6 +21,11 @@ export const dom = {
   threeCanvas: document.getElementById('threeCanvas'),
   konamiStatus: document.getElementById('konamiStatus'),
   konamiBadge: document.getElementById('konamiBadge'),
+  arcadeNowPlaying: document.getElementById('arcadeNowPlaying'),
+  arcadeSantaStatus: document.getElementById('arcadeSantaStatus'),
+  arcadeVibeStatus: document.getElementById('arcadeVibeStatus'),
+  arcadeShuffle: document.getElementById('arcadeShuffle'),
+  arcadeFocus: document.getElementById('arcadeFocus'),
 };
 
 export const setAccent = (color) => {
