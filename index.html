@@ -155,6 +155,21 @@
         <span class="arcade-sticker" aria-hidden="true">1996 NORTH POLE</span>
       </div>
       <p>Choose an ornament to beam a mini-game into this glowing panel. Everything is tacky on purpose — now with bonus 90s mall Santa energy.</p>
+      <div class="arcade-hero" aria-label="Elf arcade quick actions">
+        <div>
+          <h3>Elf Control Deck</h3>
+          <p class="muted">Swap games, boost cheer, or follow the Santa cookie directive from one cozy spot.</p>
+          <div class="hero-chips">
+            <span class="pill" id="arcadeNowPlaying">Now playing: Snow Console</span>
+            <span class="pill" id="arcadeSantaStatus">Santa has a cookie question…</span>
+            <span class="pill" id="arcadeVibeStatus">Vibe: Mall Santa Mix</span>
+          </div>
+        </div>
+        <div class="hero-actions" role="group" aria-label="Arcade helper actions">
+          <button class="action loud" id="arcadeShuffle">Shuffle games</button>
+          <button class="action" id="arcadeFocus">Center the arcade</button>
+        </div>
+      </div>
       <div class="arcade-rail" aria-label="Elf arcade vibe controls">
         <div class="rail-stack">
           <div class="pill ticker">Elf Hotline: 1-800-RETRO-XMAS • VHS rewards unlocked when cheer is high!</div>
@@ -171,7 +186,7 @@
         </div>
       </div>
       <div class="arcade-ticker" id="arcadeTicker" aria-live="polite">Dialed into mall fountain acoustics. Glitter levels nominal.</div>
-      <div class="game-area" id="gameArea" aria-live="polite"></div>
+      <div class="game-area" id="gameArea" aria-live="polite" tabindex="-1"></div>
     </div>
   </div>
 

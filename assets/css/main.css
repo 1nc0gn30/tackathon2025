@@ -266,6 +266,70 @@ button {
 .game-area {
   min-height: 520px;
   position: relative;
+  padding: 12px;
+  border-radius: 14px;
+  background: radial-gradient(circle at 10% 10%, rgba(57, 255, 20, 0.1), rgba(11, 14, 24, 0.96)),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.5), 0 0 22px rgba(0, 0, 0, 0.35);
+}
+
+.game-area::before,
+.game-area::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.game-area::before {
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  opacity: 0.7;
+}
+
+.game-area::after {
+  background: radial-gradient(circle at 80% 20%, rgba(255, 185, 0, 0.08), transparent 42%),
+    radial-gradient(circle at 20% 80%, rgba(19, 194, 255, 0.06), transparent 38%);
+  mix-blend-mode: screen;
+  opacity: 0.8;
+}
+
+.arcade-hero {
+  display: grid;
+  grid-template-columns: 1.2fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(0, 255, 153, 0.12), rgba(255, 0, 120, 0.08));
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.35);
+}
+
+.hero-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.hero-actions .action {
+  width: 100%;
+}
+
+.action.loud {
+  background: linear-gradient(135deg, rgba(255, 185, 0, 0.45), rgba(57, 255, 20, 0.45));
+  color: #0a0c14;
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 16px rgba(255, 185, 0, 0.35), inset 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 .arcade-head {
@@ -380,6 +444,59 @@ body.vibe-snowed {
   border: 1px solid rgba(57, 255, 20, 0.35);
   border-radius: 12px;
   padding: 12px;
+}
+
+.snow-lab {
+  margin: 14px 0;
+  padding: 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(19, 194, 255, 0.08), rgba(255, 105, 180, 0.08));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.lab-controls {
+  display: grid;
+  gap: 10px;
+}
+
+.lab-slider {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.lab-slider input[type='range'] {
+  accent-color: var(--active-accent);
+}
+
+.snow-preview {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08), rgba(7, 12, 22, 0.9));
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.55);
+}
+
+.snow-preview canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.snow-preview-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.3));
+  display: grid;
+  align-content: space-between;
+  padding: 10px;
+  pointer-events: none;
 }
 
 .weather-card h3 {
@@ -611,6 +728,45 @@ body.vibe-snowed {
   overflow: hidden;
   display: grid;
   gap: 10px;
+}
+
+.santa-card {
+  width: min(520px, 100%);
+  background: radial-gradient(circle at 25% 20%, rgba(255, 255, 255, 0.08), rgba(10, 14, 24, 0.95));
+  border-radius: 14px;
+  padding: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 20px 38px rgba(0, 0, 0, 0.5), 0 0 16px rgba(255, 185, 0, 0.25);
+}
+
+.santa-top {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.santa-title {
+  margin: 0;
+  font-weight: 700;
+  color: #fff;
+}
+
+.santa-line {
+  margin: 2px 0 0;
+  color: #c9d9ff;
+}
+
+.santa-emoji {
+  font-size: 2rem;
+  filter: drop-shadow(0 0 8px rgba(255, 185, 0, 0.4));
+}
+
+.santa-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
 }
 
 .modal-header {

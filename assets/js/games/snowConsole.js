@@ -4,7 +4,114 @@ import { snowWatchlist } from '../data/catalog.js';
 import { setAccent } from '../utils/dom.js';
 
 const snowCodes = new Set([71, 73, 75, 77, 85, 86]);
-let logEl, weatherEl, snowPlacesEl, webcamEl, weatherStatusEl, searchForm, searchInput;
+let logEl,
+  weatherEl,
+  snowPlacesEl,
+  webcamEl,
+  weatherStatusEl,
+  searchForm,
+  searchInput,
+  snowPreviewCanvas,
+  snowPreviewWrap,
+  snowMakerLabel,
+  snowIntensity,
+  snowSwirl;
+let snowRenderer,
+  snowScene,
+  snowCamera,
+  snowParticles,
+  snowAnimId,
+  snowVelocities,
+  snowCounts,
+  snowResizeHandler;
+const snowConfig = { intensity: 26, swirl: 0.65 };
+
+const destroySnowPreview = () => {
+  if (snowResizeHandler) {
+    window.removeEventListener('resize', snowResizeHandler);
+    snowResizeHandler = null;
+  }
+  if (snowAnimId) cancelAnimationFrame(snowAnimId);
+  snowAnimId = null;
+  if (snowRenderer) {
+    snowRenderer.dispose();
+    snowRenderer.forceContextLoss?.();
+  }
+  snowRenderer = null;
+  snowScene = null;
+  snowCamera = null;
+  snowParticles = null;
+  snowVelocities = null;
+  snowCounts = null;
+};
+
+const initSnowPreview = () => {
+  destroySnowPreview();
+  if (!snowPreviewCanvas || !snowPreviewWrap || typeof THREE === 'undefined') return;
+
+  snowRenderer = new THREE.WebGLRenderer({ canvas: snowPreviewCanvas, alpha: true, antialias: true });
+  const { width, height } = snowPreviewWrap.getBoundingClientRect();
+  snowRenderer.setSize(width, height);
+  snowRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  snowScene = new THREE.Scene();
+  snowScene.fog = new THREE.FogExp2(0x0c1b23, 0.12);
+
+  snowCamera = new THREE.PerspectiveCamera(50, width / height, 0.1, 40);
+  snowCamera.position.set(0, 0.2, 6);
+
+  snowScene.add(new THREE.AmbientLight(0xaadfff, 0.5));
+  const glow = new THREE.PointLight(0xfff3c4, 1.2, 22);
+  glow.position.set(0.4, 2.2, 4.5);
+  snowScene.add(glow);
+
+  const count = Math.floor(280 + snowConfig.intensity * 8);
+  snowCounts = count;
+  const positions = new Float32Array(count * 3);
+  snowVelocities = new Float32Array(count * 2);
+  for (let i = 0; i < count; i++) {
+    positions[i * 3] = (Math.random() - 0.5) * 6;
+    positions[i * 3 + 1] = Math.random() * 6;
+    positions[i * 3 + 2] = Math.random() * 2 - 1;
+    snowVelocities[i * 2] = 0.4 + Math.random() * (snowConfig.intensity / 50);
+    snowVelocities[i * 2 + 1] = (Math.random() - 0.5) * snowConfig.swirl;
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const material = new THREE.PointsMaterial({
+    color: 0xffffff,
+    size: 0.08,
+    transparent: true,
+    opacity: 0.9,
+    depthWrite: false,
+  });
+  snowParticles = new THREE.Points(geometry, material);
+  snowScene.add(snowParticles);
+
+  const animate = () => {
+    const pos = snowParticles.geometry.getAttribute('position');
+    const array = pos.array;
+    const time = Date.now() * 0.001;
+    for (let i = 0; i < snowCounts; i++) {
+      array[i * 3 + 1] -= snowVelocities[i * 2] * 0.015;
+      array[i * 3] += Math.sin(time + i * 0.5) * snowVelocities[i * 2 + 1] * 0.008;
+      if (array[i * 3 + 1] < -1.5) {
+        array[i * 3 + 1] = 5.5;
+        array[i * 3] = (Math.random() - 0.5) * 6;
+      }
+    }
+    pos.needsUpdate = true;
+    snowRenderer.render(snowScene, snowCamera);
+    snowAnimId = requestAnimationFrame(animate);
+  };
+
+  if (!snowResizeHandler) {
+    snowResizeHandler = () => initSnowPreview();
+    window.addEventListener('resize', snowResizeHandler);
+  }
+
+  animate();
+};
 
 const describeWeather = (code) => {
   const map = {
@@ -123,13 +230,15 @@ const fetchSnowWatch = async () => {
 
 const startStream = () => {
   cleanupTimers();
-  addLog('⚙️ Generating crystal snowflakes...');
+  addLog(`⚙️ Generating crystal snowflakes (density ${snowConfig.intensity}, swirl ${snowConfig.swirl})...`);
   let count = 0;
+  const delay = Math.max(140, 520 - snowConfig.intensity * 6);
   state.activeInterval = setInterval(() => {
     const flake = '*'.repeat(2 + Math.floor(Math.random() * 6));
-    addLog(`❄️ ${flake} drift ${++count}`);
+    const drift = Math.random() > 0.5 ? '↺ swirl' : '↻ gust';
+    addLog(`❄️ ${flake} drift ${++count} (${drift})`);
     if (count % 6 === 0) addLog('🎅 Santa: more snow!');
-  }, 450);
+  }, delay);
 };
 
 export const SnowConsole = {
@@ -160,6 +269,23 @@ export const SnowConsole = {
           <div id="snowCam"></div>
         </div>
       </div>
+      <div class="snow-lab" aria-label="Snow maker studio">
+        <div>
+          <h3>Snow Maker Studio</h3>
+          <p class="muted" id="snowMakerLabel">Dial in cinematic snow, then blast it into the console.</p>
+          <div class="lab-controls">
+            <label class="lab-slider">Flake density<input type="range" id="snowIntensity" min="8" max="60" value="26" /></label>
+            <label class="lab-slider">Wind swirl<input type="range" id="snowSwirl" min="0" max="1" step="0.05" value="0.65" /></label>
+          </div>
+        </div>
+        <div class="snow-preview" id="snowPreview" aria-label="3D snow preview">
+          <canvas id="snowPreviewCanvas" aria-hidden="true"></canvas>
+          <div class="snow-preview-overlay">
+            <span class="pill tiny">Live 3D snow</span>
+            <p class="muted">Adjust the sliders to see flakes dance.</p>
+          </div>
+        </div>
+      </div>
       <div class="control-row">
         <button class="action" id="snowPrint">PRINT SNOW</button>
         <button class="action" id="snowStop">CLEAR</button>
@@ -174,11 +300,29 @@ export const SnowConsole = {
     webcamEl = document.getElementById('snowCam');
     searchForm = document.getElementById('cityLookup');
     searchInput = document.getElementById('cityInput');
+    snowPreviewCanvas = document.getElementById('snowPreviewCanvas');
+    snowPreviewWrap = document.getElementById('snowPreview');
+    snowMakerLabel = document.getElementById('snowMakerLabel');
+    snowIntensity = document.getElementById('snowIntensity');
+    snowSwirl = document.getElementById('snowSwirl');
     addLog('Console booted. Brrr.');
 
     const startBtn = document.getElementById('snowPrint');
     const stopBtn = document.getElementById('snowStop');
     const detectBtn = document.getElementById('detectWeather');
+
+    const updateSnowMaker = () => {
+      snowConfig.intensity = Number(snowIntensity?.value || snowConfig.intensity);
+      snowConfig.swirl = Number(snowSwirl?.value || snowConfig.swirl);
+      if (snowMakerLabel) {
+        snowMakerLabel.textContent = `Density ${snowConfig.intensity} • Swirl ${snowConfig.swirl}`;
+      }
+      initSnowPreview();
+    };
+
+    snowIntensity?.addEventListener('input', updateSnowMaker);
+    snowSwirl?.addEventListener('input', updateSnowMaker);
+    updateSnowMaker();
 
     startBtn.addEventListener('click', startStream);
     stopBtn.addEventListener('click', () => {
@@ -217,5 +361,9 @@ export const SnowConsole = {
     });
 
     fetchSnowWatch();
+  },
+  destroy() {
+    destroySnowPreview();
+    cleanupTimers();
   },
 };
