@@ -18,6 +18,7 @@ export const dom = {
   settingsToggle: document.getElementById('settingsToggle'),
   settingsClose: document.getElementById('settingsClose'),
   webglCanvas: document.getElementById('webglCanvas'),
+  threeCanvas: document.getElementById('threeCanvas'),
   konamiStatus: document.getElementById('konamiStatus'),
   konamiBadge: document.getElementById('konamiBadge'),
 };

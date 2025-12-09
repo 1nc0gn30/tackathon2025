@@ -22,6 +22,35 @@ const fallbackSanta = {
   ],
 };
 
+const trackerLinks = [
+  {
+    name: 'NORAD Tracks Santa',
+    url: 'https://www.noradsanta.org/',
+    badge: 'Official radar',
+    note: '3D globe + daily updates direct from NORAD.',
+  },
+  {
+    name: 'Google Santa Tracker',
+    url: 'https://santatracker.google.com/',
+    badge: 'Games + live path',
+    note: 'Interactive globe with elf mini-games.',
+  },
+  {
+    name: 'Santa Update Radio',
+    url: 'https://santaupdate.com/',
+    badge: 'North Pole newsroom',
+    note: 'Newsroom dispatches + Santa tracking audio.',
+  },
+  {
+    name: 'Elf HQ Live Cam',
+    url: 'https://northpole.com/',
+    badge: 'Workshop cams',
+    note: 'Elf plaza cams and countdown boards.',
+  },
+];
+
+const noradFeedUrl = 'https://www.noradsanta.org/en/map';
+
 const buildMap = (lat, lon) => {
   const bbox = `${lon - 1},${lat - 1},${lon + 1},${lat + 1}`;
   return `<iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lon}" title="Santa tracker map" loading="lazy"></iframe>`;
@@ -95,6 +124,11 @@ export const SantaTracker = {
         <span class="pill">Live Santa Tracker</span>
         <span class="pill santa-badge">Free API • No sign-up</span>
       </div>
+      <div class="santa-atmosphere" aria-hidden="true">
+        <div class="santa-aurora"></div>
+        <div class="santa-lights-trail"></div>
+        <div class="santa-flakes"></div>
+      </div>
       <div class="santa-grid">
         <div class="santa-card">
           <div id="santaStatus"></div>
@@ -114,14 +148,52 @@ export const SantaTracker = {
         <p class="muted">Pulled from Santa Tracker API when available. Shows last known hop and probable path.</p>
         <ul class="santa-route" id="santaRoute"></ul>
       </div>
+      <div class="santa-grid santa-deep-grid">
+        <div class="santa-card santa-feed-card">
+          <div class="santa-feed-head">
+            <div>
+              <h3>NORAD live radar preview</h3>
+              <p class="muted">Official NORAD tracker embedded with a direct link to the full experience.</p>
+            </div>
+            <a class="pill tiny" href="https://www.noradsanta.org/" target="_blank" rel="noopener">Open NORAD ↗</a>
+          </div>
+          <div class="norad-frame" id="noradFrame" aria-label="NORAD Santa tracker embed">
+            <iframe src="${noradFeedUrl}" title="NORAD Santa tracker preview" loading="lazy"></iframe>
+          </div>
+          <p class="muted">If the preview looks shy, tap the NORAD link to open their official tab.</p>
+        </div>
+        <div class="santa-card santa-directory" id="santaDirectory">
+          <h3>Other Santa trackers</h3>
+          <p class="muted">Jump out to other live globes, webcams, and North Pole radio streams.</p>
+          <div class="santa-link-grid" aria-label="External Santa tracker links"></div>
+        </div>
+      </div>
     `;
 
     statusEl = document.getElementById('santaStatus');
     routeEl = document.getElementById('santaRoute');
     mapEl = document.getElementById('santaMap');
     metaEl = document.getElementById('santaMeta');
+    const directory = document.getElementById('santaDirectory')?.querySelector('.santa-link-grid');
 
     document.getElementById('refreshSanta').addEventListener('click', fetchSanta);
+
+    if (directory) {
+      directory.innerHTML = trackerLinks
+        .map(
+          (tracker) => `
+            <a class="santa-link-card" href="${tracker.url}" target="_blank" rel="noopener">
+              <div class="santa-link-top">
+                <span class="pill tiny">${tracker.badge}</span>
+                <span aria-hidden="true">↗</span>
+              </div>
+              <strong>${tracker.name}</strong>
+              <p>${tracker.note}</p>
+            </a>
+          `
+        )
+        .join('');
+    }
 
     renderSanta(fallbackSanta, 'Loading first ping...');
     fetchSanta();
