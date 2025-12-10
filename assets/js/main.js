@@ -101,6 +101,12 @@ const defaultBackground = getComputedStyle(document.body).background;
 const santaKey = 'tacky-santa-cookie';
 let santaModal;
 
+const syncTreeReturnButton = () => {
+  if (!dom.treeReturnBtn) return;
+  const onTreePage = dom.body.classList.contains('home-mode') && !dom.body.classList.contains('tree-hidden');
+  dom.treeReturnBtn.toggleAttribute('hidden', onTreePage);
+};
+
 const gameLabels = {
   snow: 'Snow Console',
   react: 'Elf Reaction Lab',
@@ -172,7 +178,7 @@ const haltActiveMedia = () => {
 
 const hideTreeForArcade = () => {
   dom.body.classList.add('tree-hidden');
-  dom.treeReturnBtn?.removeAttribute('hidden');
+  syncTreeReturnButton();
 };
 
 const showTreeView = () => {
@@ -181,7 +187,7 @@ const showTreeView = () => {
   haltActiveMedia();
   dom.body.classList.remove(...gameThemeClasses);
   hasEnteredArcade = false;
-  dom.treeReturnBtn?.setAttribute('hidden', '');
+  syncTreeReturnButton();
   dom.treeWrap?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   setTimeout(() => dom.treeSpace?.focus({ preventScroll: true }), 300);
 };
@@ -473,6 +479,7 @@ const boot = () => {
   initInteractions();
   initSantaPrompt();
   initThreeScrollReveal();
+  syncTreeReturnButton();
 
   initSettings({
     onSnowToggle: (enabled) => {

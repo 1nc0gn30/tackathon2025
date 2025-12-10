@@ -162,53 +162,68 @@
         <h2 aria-live="polite">🎮 Elf Arcade Hub</h2>
         <span class="arcade-sticker" aria-hidden="true">1996 NORTH POLE</span>
       </div>
-      <p>Choose an ornament to beam a mini-game into this glowing panel. Everything is tacky on purpose — now with bonus 90s mall Santa energy.</p>
-      <div class="arcade-hero" aria-label="Elf arcade quick actions">
-        <div>
-          <h3>Elf Control Deck</h3>
-          <p class="muted">Swap games, boost cheer, or follow the Santa cookie directive from one cozy spot.</p>
-          <div class="hero-chips">
-            <span class="pill" id="arcadeNowPlaying">Now playing: Snow Console</span>
-            <span class="pill" id="arcadeSantaStatus">Santa has a cookie question…</span>
-            <span class="pill" id="arcadeVibeStatus">Vibe: Mall Santa Mix</span>
-          </div>
-        </div>
-        <div class="hero-actions" role="group" aria-label="Arcade helper actions">
-          <button class="action loud" id="arcadeShuffle">Shuffle games</button>
-          <button class="action" id="arcadeFocus">Center the arcade</button>
-        </div>
-      </div>
-      <div class="arcade-playlist" aria-label="Elf Arcade lineup">
-        <div class="playlist-header">
+      <details class="arcade-drawer" open>
+        <summary>🎛️ Arcade overview</summary>
+        <p>Choose an ornament to beam a mini-game into this glowing panel. Everything is tacky on purpose — now with bonus 90s mall Santa energy.</p>
+      </details>
+      <details class="arcade-drawer" open>
+        <summary>🕹️ Elf Control Deck</summary>
+        <div class="arcade-hero" aria-label="Elf arcade quick actions">
           <div>
-            <p class="badge">Playable</p>
-            <h3>Elf Arcade Hub</h3>
-            <p class="muted">Pick a cartridge to beam into the screen — everything is wired now.</p>
+            <h3>Elf Control Deck</h3>
+            <p class="muted">Swap games, boost cheer, or follow the Santa cookie directive from one cozy spot.</p>
+            <div class="hero-chips">
+              <span class="pill" id="arcadeNowPlaying">Now playing: Snow Console</span>
+              <span class="pill" id="arcadeSantaStatus">Santa has a cookie question…</span>
+              <span class="pill" id="arcadeVibeStatus">Vibe: Mall Santa Mix</span>
+            </div>
           </div>
-          <div class="playlist-actions">
-            <span class="pill" id="cheerStatusChip">Cheer score: 18</span>
-            <button class="action" id="arcadeLineupRefresh">Rotate lineup</button>
-          </div>
-        </div>
-        <div class="playlist-rail" id="playlistRail" aria-live="polite"></div>
-      </div>
-      <div class="arcade-rail" aria-label="Elf arcade vibe controls">
-        <div class="rail-stack">
-          <div class="pill ticker">Elf Hotline: 1-800-RETRO-XMAS • VHS rewards unlocked when cheer is high!</div>
-          <div class="cheer-meter">
-            <label for="cheerRange">Cheer meter</label>
-            <input id="cheerRange" type="range" min="6" max="36" value="18" aria-describedby="cheerOutput" />
-            <output id="cheerOutput" class="pill tiny">Mall Santa Mode</output>
+          <div class="hero-actions" role="group" aria-label="Arcade helper actions">
+            <button class="action loud" id="arcadeShuffle">Shuffle games</button>
+            <button class="action" id="arcadeFocus">Center the arcade</button>
           </div>
         </div>
-        <div class="vibe-buttons" role="group" aria-label="Choose a 1990s vibe">
-          <button class="action vibe-btn" data-vibe="mall">🛍️ Mall Santa Mix</button>
-          <button class="action vibe-btn" data-vibe="cable">📺 Cable Special</button>
-          <button class="action vibe-btn" data-vibe="snowed">❄️ Blizzard LAN Party</button>
+      </details>
+      <details class="arcade-drawer" open>
+        <summary>📼 Playlist & lineup</summary>
+        <div class="arcade-playlist" aria-label="Elf Arcade lineup">
+          <div class="playlist-header">
+            <div>
+              <p class="badge">Playable</p>
+              <h3>Elf Arcade Hub</h3>
+              <p class="muted">Pick a cartridge to beam into the screen — everything is wired now.</p>
+            </div>
+            <div class="playlist-actions">
+              <span class="pill" id="cheerStatusChip">Cheer score: 18</span>
+              <button class="action" id="arcadeLineupRefresh">Rotate lineup</button>
+            </div>
+          </div>
+          <div class="playlist-rail" id="playlistRail" aria-live="polite"></div>
         </div>
-      </div>
-      <div class="arcade-ticker" id="arcadeTicker" aria-live="polite">Dialed into mall fountain acoustics. Glitter levels nominal.</div>
-      <div class="game-area" id="gameArea" aria-live="polite" tabindex="-1"></div>
+      </details>
+      <details class="arcade-drawer">
+        <summary>🌈 Cheer & vibes</summary>
+        <div class="arcade-rail" aria-label="Elf arcade vibe controls">
+          <div class="rail-stack">
+            <div class="pill ticker">Elf Hotline: 1-800-RETRO-XMAS • VHS rewards unlocked when cheer is high!</div>
+            <div class="cheer-meter">
+              <label for="cheerRange">Cheer meter</label>
+              <input id="cheerRange" type="range" min="6" max="36" value="18" aria-describedby="cheerOutput" />
+              <output id="cheerOutput" class="pill tiny">Mall Santa Mode</output>
+            </div>
+          </div>
+          <div class="vibe-buttons" role="group" aria-label="Choose a 1990s vibe">
+            <button class="action vibe-btn" data-vibe="mall">🛍️ Mall Santa Mix</button>
+            <button class="action vibe-btn" data-vibe="cable">📺 Cable Special</button>
+            <button class="action vibe-btn" data-vibe="snowed">❄️ Blizzard LAN Party</button>
+          </div>
+        </div>
+      </details>
+      <details class="arcade-drawer" open>
+        <summary>📺 Screen & ticker</summary>
+        <div class="arcade-ticker" id="arcadeTicker" aria-live="polite">Dialed into mall fountain acoustics. Glitter levels nominal.</div>
+        <div class="game-area" id="gameArea" aria-live="polite" tabindex="-1"></div>
+      </details>
     </div>
   </div>
 
