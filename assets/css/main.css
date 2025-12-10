@@ -325,6 +325,72 @@ button {
   width: 100%;
 }
 
+.arcade-playlist {
+  margin: 12px 0;
+  padding: 12px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(0, 255, 170, 0.04));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.35);
+  display: grid;
+  gap: 10px;
+}
+
+.playlist-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.playlist-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.playlist-rail {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.playlist-card {
+  position: relative;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.35);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.playlist-card.active {
+  border-color: var(--active-accent);
+  box-shadow: 0 0 18px rgba(57, 255, 20, 0.3), inset 0 0 16px rgba(0, 0, 0, 0.4);
+}
+
+.playlist-card h4 {
+  margin: 4px 0;
+}
+
+.playlist-card .pill {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.game-area.spotlit {
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.35), inset 0 0 18px rgba(0, 0, 0, 0.5);
+}
+
+.arcade-ticker.flash {
+  outline: 2px solid var(--active-accent);
+}
+
 .action.loud {
   background: linear-gradient(135deg, rgba(255, 185, 0, 0.45), rgba(57, 255, 20, 0.45));
   color: #0a0c14;
@@ -459,6 +525,20 @@ body.game-theme-santa .game-area {
   box-shadow: inset 0 0 26px rgba(255, 96, 96, 0.18);
 }
 
+body.game-theme-cookie .arcade-hero,
+body.game-theme-cookie .game-area {
+  background: radial-gradient(circle at 22% 24%, rgba(245, 180, 106, 0.32), rgba(32, 14, 6, 0.9)),
+    radial-gradient(circle at 70% 70%, rgba(255, 226, 200, 0.16), transparent 50%);
+  box-shadow: inset 0 0 26px rgba(245, 180, 106, 0.25);
+}
+
+body.game-theme-reindeer .arcade-hero,
+body.game-theme-reindeer .game-area {
+  background: linear-gradient(145deg, rgba(155, 123, 255, 0.18), rgba(12, 16, 32, 0.9)),
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.1), transparent 50%);
+  box-shadow: inset 0 0 26px rgba(155, 123, 255, 0.25);
+}
+
 body[class*='game-theme-'] .arcade-ticker {
   background: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0, rgba(255, 255, 255, 0.08) 7px, rgba(0, 0, 0, 0.18) 7px, rgba(0, 0, 0, 0.18) 14px),
     radial-gradient(circle at 80% 20%, rgba(19, 194, 255, 0.12), transparent 50%);
@@ -525,6 +605,13 @@ body.vibe-snowed {
 
 .lab-slider input[type='range'] {
   accent-color: var(--active-accent);
+}
+
+.lab-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .snow-preview {
@@ -756,6 +843,196 @@ body.vibe-snowed {
 
 .reaction-chip strong {
   font-size: 1.1rem;
+}
+
+.cookie-board {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+
+.cookie-preview {
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.45));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.5);
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+}
+
+.cookie-preview .badge {
+  justify-self: start;
+}
+
+.cookie-shape {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c86f2d, #a95619);
+  position: relative;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4), 0 0 20px rgba(245, 180, 106, 0.3);
+  display: grid;
+  place-items: center;
+}
+
+.cookie-frosting {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: #f6e7d8;
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.25);
+}
+
+.cookie-topping {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #0a0c14;
+  font-weight: 700;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.cookie-controls {
+  display: grid;
+  gap: 10px;
+}
+
+.cookie-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.cookie-token {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.cookie-token.active {
+  border-color: var(--active-accent);
+  box-shadow: 0 0 16px rgba(245, 180, 106, 0.3), inset 0 0 12px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+.cookie-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cookie-feed {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.4);
+  display: grid;
+  gap: 10px;
+}
+
+.cookie-entry {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rally-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.rally-panel {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.45);
+  display: grid;
+  gap: 8px;
+}
+
+.rally-score {
+  display: grid;
+  gap: 8px;
+}
+
+.rally-track {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.45);
+}
+
+.rally-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.progress-bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(135deg, var(--active-accent), rgba(255, 255, 255, 0.6));
+}
+
+.rally-feed {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.35);
+  min-height: 80px;
+  display: grid;
+  gap: 8px;
+}
+
+.rally-log-entry {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.weather-pill {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.weather-pill input {
+  accent-color: var(--active-accent);
 }
 
 .lamp-badge {
