@@ -33,6 +33,8 @@ const buildStarfield = () => {
   scene.add(points);
 };
 
+const ornamentCenter = { x: -0.5, z: -0.5 };
+
 const makeOrnament = (color, offset) => {
   const geometry = new THREE.IcosahedronGeometry(0.55, 1);
   const material = new THREE.MeshStandardMaterial({
@@ -42,11 +44,28 @@ const makeOrnament = (color, offset) => {
     emissive: new THREE.Color(color).multiplyScalar(0.15),
   });
   const mesh = new THREE.Mesh(geometry, material);
-  mesh.position.set(offset * 1.4 - 2.2, Math.sin(offset) * 0.5 + 0.4, -0.6 - offset * 0.4);
+  const orbitRadius = 1.4 + offset * 0.18 + Math.random() * 0.35;
+  const phase = Math.random() * Math.PI * 2;
+  const speed = 0.22 + Math.random() * 0.18;
+  const bobOffset = Math.random() * Math.PI * 2;
+  const height = 0.55 + Math.random() * 0.35;
+
+  mesh.position.set(
+    ornamentCenter.x + Math.cos(phase) * orbitRadius,
+    height,
+    ornamentCenter.z + Math.sin(phase) * orbitRadius
+  );
   mesh.castShadow = false;
   mesh.receiveShadow = false;
   scene.add(mesh);
-  ornaments.push(mesh);
+  ornaments.push({
+    mesh,
+    orbitRadius,
+    phase,
+    speed,
+    bobOffset,
+    height,
+  });
 };
 
 const buildGround = () => {
@@ -174,10 +193,14 @@ const buildSnowfield = () => {
 };
 
 const tick = () => {
-  ornaments.forEach((mesh, idx) => {
-    mesh.rotation.y += 0.006 + idx * 0.001;
-    mesh.rotation.x += 0.004;
-    mesh.position.y = Math.sin(Date.now() * 0.001 + idx) * 0.5 + 0.6 + idx * 0.04;
+  const time = Date.now() * 0.001;
+  ornaments.forEach(({ mesh, orbitRadius, phase, speed, bobOffset, height }, idx) => {
+    const angle = phase + time * speed + idx * 0.18;
+    mesh.rotation.y += 0.006 + idx * 0.0015;
+    mesh.rotation.x += 0.0045;
+    mesh.position.x = ornamentCenter.x + Math.cos(angle) * orbitRadius;
+    mesh.position.z = ornamentCenter.z + Math.sin(angle) * orbitRadius;
+    mesh.position.y = Math.sin(time * 0.9 + bobOffset + idx * 0.3) * 0.35 + height;
   });
   if (snowPoints) {
     const pos = snowPoints.geometry.getAttribute('position');
