@@ -20,6 +20,7 @@ export const state = {
   activeInterval: null,
   activeTimeout: null,
   bestReaction: null,
+  reactionStreak: 0,
   snowTicker: [],
   konamiBuffer: [],
   konamiUnlocked: false,
