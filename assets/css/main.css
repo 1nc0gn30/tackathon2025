@@ -411,6 +411,60 @@ button {
   color: #fefefe;
 }
 
+/* Dynamic arcade themes per ornament */
+body[class*='game-theme-'] #gamePanel {
+  background: linear-gradient(150deg, rgba(8, 16, 28, 0.92), rgba(6, 10, 18, 0.9));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), inset 0 0 36px rgba(0, 0, 0, 0.4);
+}
+
+body.game-theme-snow .arcade-hero,
+body.game-theme-snow .game-area {
+  background: radial-gradient(circle at 20% 20%, rgba(19, 194, 255, 0.2), rgba(4, 22, 38, 0.9)),
+    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.08), rgba(4, 12, 22, 0.7));
+}
+
+body.game-theme-react .arcade-hero,
+body.game-theme-react .game-area {
+  background: linear-gradient(140deg, rgba(255, 139, 240, 0.16), rgba(19, 194, 255, 0.12)),
+    radial-gradient(circle at 12% 18%, rgba(255, 94, 173, 0.18), transparent 48%);
+  box-shadow: inset 0 0 24px rgba(255, 139, 240, 0.18);
+}
+
+body.game-theme-hunt .arcade-hero,
+body.game-theme-hunt .game-area {
+  background: radial-gradient(circle at 16% 30%, rgba(62, 187, 107, 0.2), rgba(7, 23, 12, 0.92)),
+    radial-gradient(circle at 80% 70%, rgba(19, 194, 255, 0.12), transparent 50%);
+  box-shadow: inset 0 0 28px rgba(0, 0, 0, 0.35);
+}
+
+body.game-theme-jukebox .arcade-hero,
+body.game-theme-jukebox .game-area {
+  background: linear-gradient(140deg, rgba(255, 179, 71, 0.16), rgba(255, 255, 255, 0.08)),
+    radial-gradient(circle at 20% 80%, rgba(255, 214, 102, 0.14), rgba(32, 18, 4, 0.8));
+  box-shadow: inset 0 0 24px rgba(255, 179, 71, 0.18);
+}
+
+body.game-theme-theater .arcade-hero,
+body.game-theme-theater .game-area {
+  background: linear-gradient(135deg, rgba(104, 82, 255, 0.2), rgba(19, 25, 56, 0.9)),
+    radial-gradient(circle at 78% 22%, rgba(255, 112, 141, 0.14), transparent 50%);
+  box-shadow: inset 0 0 26px rgba(104, 82, 255, 0.18);
+}
+
+body.game-theme-santa .arcade-hero,
+body.game-theme-santa .game-area {
+  background: linear-gradient(150deg, rgba(255, 96, 96, 0.18), rgba(12, 24, 20, 0.88)),
+    radial-gradient(circle at 18% 18%, rgba(102, 255, 194, 0.14), transparent 52%);
+  box-shadow: inset 0 0 26px rgba(255, 96, 96, 0.18);
+}
+
+body[class*='game-theme-'] .arcade-ticker {
+  background: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0, rgba(255, 255, 255, 0.08) 7px, rgba(0, 0, 0, 0.18) 7px, rgba(0, 0, 0, 0.18) 14px),
+    radial-gradient(circle at 80% 20%, rgba(19, 194, 255, 0.12), transparent 50%);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
 body.vibe-mall {
   background: radial-gradient(circle at 20% 20%, #1e0a2b, #050505 55%), radial-gradient(circle at 80% 10%, #1c3a66, #050505 60%), repeating-linear-gradient(45deg, #350d31 0, #350d31 14px, #0f0f0f 14px, #0f0f0f 28px);
 }
