@@ -33,6 +33,15 @@ const accentMap = {
   santa: '#ffc107',
 };
 
+const gameThemes = {
+  snow: 'game-theme-snow',
+  react: 'game-theme-react',
+  hunt: 'game-theme-hunt',
+  jukebox: 'game-theme-jukebox',
+  theater: 'game-theme-theater',
+  santa: 'game-theme-santa',
+};
+
 const hexToRgb = (hex) => {
   const normalized = hex.replace('#', '');
   const value = normalized.length === 3
@@ -75,6 +84,7 @@ const vibeThemes = {
 };
 
 const vibeClasses = Object.values(vibeThemes).map((v) => v.className);
+const gameThemeClasses = Object.values(gameThemes);
 let activeVibe = 'mall';
 let currentGame = null;
 let hasEnteredArcade = false;
@@ -120,7 +130,8 @@ const hideTreeForArcade = () => {
 const showTreeView = () => {
   dom.body.classList.remove('tree-hidden');
   dom.body.classList.add('home-mode');
-   haltActiveMedia();
+  haltActiveMedia();
+  dom.body.classList.remove(...gameThemeClasses);
   hasEnteredArcade = false;
   dom.treeReturnBtn?.setAttribute('hidden', '');
   dom.treeWrap?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -145,6 +156,14 @@ const applyAccent = () => {
   }
 };
 
+const applyGameTheme = (id) => {
+  dom.body.classList.remove(...gameThemeClasses);
+  const className = gameThemes[id];
+  if (className) {
+    dom.body.classList.add(className);
+  }
+};
+
 const activateGame = (id) => {
   if (currentGame && controllers[currentGame]?.destroy) {
     controllers[currentGame].destroy();
@@ -153,6 +172,7 @@ const activateGame = (id) => {
   haltActiveMedia();
   dom.ornaments.forEach((o) => o.classList.toggle('active', o.dataset.id === id));
   currentGame = id;
+  applyGameTheme(id);
   applyAccent();
   controllers[id]?.render();
   if (dom.arcadeNowPlaying) {
