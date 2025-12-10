@@ -10,6 +10,7 @@ const ornaments = [];
 let snowPoints;
 let snowVelocities;
 let snowCount = 0;
+let targetOpacity = 0;
 
 const buildStarfield = () => {
   const starGeometry = new THREE.BufferGeometry();
@@ -208,7 +209,7 @@ export const initThreeScene = () => {
     });
     renderer.setClearColor(0x000000, 0);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.8));
-    dom.threeCanvas.style.opacity = '0.95';
+    dom.threeCanvas.style.opacity = '0';
 
     scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x0c1f12, 0.06);
@@ -250,6 +251,12 @@ export const initThreeScene = () => {
     console.warn('Three.js scene fallback', err);
     dom.threeCanvas.style.display = 'none';
   }
+};
+
+export const setThreeVisibility = (visible) => {
+  if (!dom.threeCanvas) return;
+  targetOpacity = visible ? 0.95 : 0;
+  dom.threeCanvas.style.opacity = String(targetOpacity);
 };
 
 export const stopThreeScene = () => {

@@ -5,9 +5,10 @@ import { initParallax } from './effects/parallax.js';
 import { initKonami } from './effects/konami.js';
 import { startSnowfall, stopSnowfall } from './effects/snowfall.js';
 import { initGlow, stopGlow } from './effects/webglGlow.js';
-import { initThreeScene, stopThreeScene } from './effects/threeScene.js';
+import { initThreeScene, setThreeVisibility, stopThreeScene } from './effects/threeScene.js';
 import { initScreenshot } from './utils/screenshot.js';
 import { initSettings } from './utils/settings.js';
+import { initElfGuide } from './effects/elfGuide.js';
 import { SnowConsole } from './games/snowConsole.js';
 import { ReactionLab } from './games/reactionLab.js';
 import { PresentHunt } from './games/presentHunt.js';
@@ -321,6 +322,32 @@ const initInteractions = () => {
   dom.treeReturnBtn?.addEventListener('click', showTreeView);
 };
 
+const initThreeScrollReveal = () => {
+  if (!dom.threeCanvas) return;
+  let lastY = window.scrollY;
+  let showing = false;
+
+  const evaluate = () => {
+    const currentY = window.scrollY;
+    const delta = currentY - lastY;
+    const shouldShow = delta > 8 && currentY > 16;
+    const shouldHide = delta < -8 || currentY < 12;
+
+    if (shouldShow && !showing) {
+      showing = true;
+      setThreeVisibility(true);
+    } else if (shouldHide && showing) {
+      showing = false;
+      setThreeVisibility(false);
+    }
+
+    lastY = currentY;
+  };
+
+  window.addEventListener('scroll', () => requestAnimationFrame(evaluate));
+  evaluate();
+};
+
 const applyMotionPreference = (reduced) => {
   if (reduced) {
     stopSnowfall();
@@ -333,6 +360,7 @@ const applyMotionPreference = (reduced) => {
 const boot = () => {
   initInteractions();
   initSantaPrompt();
+  initThreeScrollReveal();
 
   initSettings({
     onSnowToggle: (enabled) => {
@@ -343,6 +371,7 @@ const boot = () => {
       if (enabled) {
         initGlow();
         initThreeScene();
+        setThreeVisibility(false);
       } else {
         stopGlow();
         stopThreeScene();
@@ -354,6 +383,7 @@ const boot = () => {
   if (state.preferences.webgl) {
     initGlow();
     initThreeScene();
+    setThreeVisibility(false);
   }
   if (state.preferences.snowfall) {
     startSnowfall();
@@ -364,6 +394,7 @@ const boot = () => {
 
   dom.postcardBtn.setAttribute('aria-live', 'polite');
   activateGame('snow');
+  initElfGuide();
 };
 
 document.addEventListener('DOMContentLoaded', boot);
