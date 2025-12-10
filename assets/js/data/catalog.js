@@ -16,7 +16,7 @@ export const tracks = [
 export const movies = [
   { title: 'Home Alone (1990)', vibe: 'Traps & triumph', runtime: '1h43', note: 'Wet Bandits beware — the ultimate 90s cozy watch.', embed: 'https://www.youtube.com/embed/jEDaVHmw7r4?autoplay=1', youtube: 'https://www.youtube.com/watch?v=jEDaVHmw7r4', category: 'Comedy' },
   { title: 'The Santa Clause (1994)', vibe: 'Corporate Santa chaos', runtime: '1h37', note: 'Tim Allen accidentally becomes the big guy.', embed: 'https://www.youtube.com/embed/t067u2Jnks0?autoplay=1', youtube: 'https://www.youtube.com/watch?v=t067u2Jnks0', category: 'Family' },
-  { title: 'Jingle All The Way (1996)', vibe: 'Turbo Man hunt', runtime: '1h29', note: '1990s consumerism + Schwarzenegger + holiday slapstick.', embed: 'https://www.youtube.com/embed/OxO6DPDhuFM?autoplay=1', youtube: 'https://www.youtube.com/watch?v=OxO6DPDhuFM', category: 'Action Comedy' },
+  { title: 'Jingle All The Way (1996)', vibe: 'Turbo Man hunt', runtime: '1h29', note: '1990s consumerism + Schwarzenegger + holiday slapstick.', embed: 'https://www.youtube.com/embed/FueVFwKRGJw?autoplay=1', youtube: 'https://www.youtube.com/watch?v=FueVFwKRGJw', category: 'Action Comedy' },
   { title: 'How the Grinch Stole Christmas (2000)', vibe: 'Borderline 90s, maximal chaos', runtime: '1h44', note: 'Jim Carrey at peak elastic Grinch energy.', embed: 'https://www.youtube.com/embed/2xg4qxxn2xI?autoplay=1', youtube: 'https://www.youtube.com/watch?v=2xg4qxxn2xI', category: 'Whoville Chaos' },
 ];
 
