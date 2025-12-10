@@ -344,6 +344,16 @@
   left: 60%;
 }
 
+.ornament[data-id='cookie'] {
+  top: 26%;
+  left: 74%;
+}
+
+.ornament[data-id='reindeer'] {
+  top: 72%;
+  left: 38%;
+}
+
 .ornament[data-id='santa'] {
   top: 58%;
   left: 24%;

@@ -83,6 +83,8 @@
           <button class="ornament" data-id="hunt" data-label="Present Hunt" aria-label="Open Present Hunt">🎁</button>
           <button class="ornament" data-id="theater" data-label="Retro Theater" aria-label="Open Retro Movie Theater">🎬</button>
           <button class="ornament" data-id="jukebox" data-label="Jingle Box" aria-label="Open Jingle Jukebox">🎶</button>
+          <button class="ornament" data-id="cookie" data-label="Cookie Crafter" aria-label="Open Cookie Crafter">🍪</button>
+          <button class="ornament" data-id="reindeer" data-label="Reindeer Rally" aria-label="Open Reindeer Rally">🦌</button>
           <button class="ornament" data-id="santa" data-label="Santa Tracker" aria-label="Open Santa Tracker">🎅</button>
         </div>
       </div>
@@ -175,6 +177,20 @@
           <button class="action loud" id="arcadeShuffle">Shuffle games</button>
           <button class="action" id="arcadeFocus">Center the arcade</button>
         </div>
+      </div>
+      <div class="arcade-playlist" aria-label="Elf Arcade lineup">
+        <div class="playlist-header">
+          <div>
+            <p class="badge">Playable</p>
+            <h3>Elf Arcade Hub</h3>
+            <p class="muted">Pick a cartridge to beam into the screen — everything is wired now.</p>
+          </div>
+          <div class="playlist-actions">
+            <span class="pill" id="cheerStatusChip">Cheer score: 18</span>
+            <button class="action" id="arcadeLineupRefresh">Rotate lineup</button>
+          </div>
+        </div>
+        <div class="playlist-rail" id="playlistRail" aria-live="polite"></div>
       </div>
       <div class="arcade-rail" aria-label="Elf arcade vibe controls">
         <div class="rail-stack">

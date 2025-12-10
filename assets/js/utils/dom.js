@@ -26,6 +26,10 @@ export const dom = {
   arcadeVibeStatus: document.getElementById('arcadeVibeStatus'),
   arcadeShuffle: document.getElementById('arcadeShuffle'),
   arcadeFocus: document.getElementById('arcadeFocus'),
+  arcadeTicker: document.getElementById('arcadeTicker'),
+  playlistRail: document.getElementById('playlistRail'),
+  arcadeLineupRefresh: document.getElementById('arcadeLineupRefresh'),
+  cheerStatusChip: document.getElementById('cheerStatusChip'),
 };
 
 export const setAccent = (color) => {

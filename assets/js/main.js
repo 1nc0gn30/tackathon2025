@@ -15,6 +15,8 @@ import { PresentHunt } from './games/presentHunt.js';
 import { Jukebox } from './games/jukebox.js';
 import { RetroTheater } from './games/theater.js';
 import { SantaTracker } from './games/santaTracker.js';
+import { CookieCrafter } from './games/cookieCrafter.js';
+import { ReindeerRally } from './games/reindeerRally.js';
 
 const controllers = {
   snow: SnowConsole,
@@ -23,6 +25,8 @@ const controllers = {
   jukebox: Jukebox,
   theater: RetroTheater,
   santa: SantaTracker,
+  cookie: CookieCrafter,
+  reindeer: ReindeerRally,
 };
 
 const accentMap = {
@@ -32,6 +36,8 @@ const accentMap = {
   jukebox: '#ffb347',
   theater: '#ff718d',
   santa: '#ffc107',
+  cookie: '#f5b46a',
+  reindeer: '#9b7bff',
 };
 
 const gameThemes = {
@@ -41,6 +47,8 @@ const gameThemes = {
   jukebox: 'game-theme-jukebox',
   theater: 'game-theme-theater',
   santa: 'game-theme-santa',
+  cookie: 'game-theme-cookie',
+  reindeer: 'game-theme-reindeer',
 };
 
 const hexToRgb = (hex) => {
@@ -100,6 +108,45 @@ const gameLabels = {
   jukebox: 'Jingle Jukebox',
   theater: 'Retro Theater',
   santa: 'Santa Tracker',
+  cookie: 'Cookie Crafter',
+  reindeer: 'Reindeer Rally',
+};
+
+const tickerMessages = {
+  snow: 'Snow console primed — live forecasts + 3D flakes.',
+  react: 'Elf reaction lab glowing. Try the neon lamp!',
+  hunt: 'Presents hidden everywhere. Keep the streak alive.',
+  jukebox: 'Jukebox queued — swap cassettes and dance.',
+  theater: 'Retro theater rolling film reels.',
+  santa: 'Santa tracker online. Cookies logged.',
+  cookie: 'Cookie Crafter ready. Stack frosting and sprinkles.',
+  reindeer: 'Reindeer Rally scoreboard armed for speed.',
+};
+
+const arcadeLineup = [
+  { id: 'snow', mood: 'Live', desc: 'Weather radar plus handmade flakes.' },
+  { id: 'cookie', mood: 'New', desc: 'Design cookies and surprise Santa.' },
+  { id: 'reindeer', mood: 'Arcade', desc: 'Race the herd with weather boosts.' },
+  { id: 'react', mood: 'Neon', desc: 'Tap reactions and chase streaks.' },
+  { id: 'hunt', mood: 'Quest', desc: 'Hunt gifts with a growing streak.' },
+  { id: 'jukebox', mood: 'Mix', desc: 'VHS mixtape controls and vibes.' },
+  { id: 'theater', mood: 'VHS', desc: 'Retro trailers and popcorn mode.' },
+  { id: 'santa', mood: 'Classic', desc: 'Tracker with Santa cookie prompts.' },
+};
+
+const setArcadeTicker = (message) => {
+  if (!dom.arcadeTicker) return;
+  dom.arcadeTicker.textContent = message;
+  dom.arcadeTicker.classList.remove('flash');
+  void dom.arcadeTicker.offsetWidth;
+  dom.arcadeTicker.classList.add('flash');
+};
+
+const setPlaylistActive = (id) => {
+  if (!dom.playlistRail) return;
+  dom.playlistRail.querySelectorAll('.playlist-card').forEach((card) => {
+    card.classList.toggle('active', card.dataset.id === id);
+  });
 };
 
 const haltActiveMedia = () => {
@@ -179,6 +226,8 @@ const activateGame = (id) => {
   if (dom.arcadeNowPlaying) {
     dom.arcadeNowPlaying.textContent = `Now playing: ${gameLabels[id] || 'Elf Arcade'}`;
   }
+  setPlaylistActive(id);
+  setArcadeTicker(tickerMessages[id] || 'Elf arcade online.');
 };
 
 const initArcadeVibes = () => {
@@ -186,17 +235,24 @@ const initArcadeVibes = () => {
   const cheerOutput = document.getElementById('cheerOutput');
   const ticker = document.getElementById('arcadeTicker');
   const vibeButtons = Array.from(document.querySelectorAll('.vibe-btn'));
+  const cheerChip = dom.cheerStatusChip;
 
   if (!cheerRange || !cheerOutput || !ticker) return;
 
   const updateCheer = (value) => {
     dom.root.style.setProperty('--cheer-heat', `${value}px`);
+    if (cheerChip) {
+      cheerChip.textContent = `Cheer score: ${value}`;
+    }
     if (value >= 28) {
       cheerOutput.textContent = 'TV Special Takeover';
+      setArcadeTicker('Cheer peaked — TV Special Takeover unlocked.');
     } else if (value >= 18) {
       cheerOutput.textContent = 'Mall Santa Mode';
+      setArcadeTicker('Cheer coasting in Mall Santa Mode.');
     } else {
       cheerOutput.textContent = 'Cozy Living Room';
+      setArcadeTicker('Cozy vibes — arcade runs in chill mode.');
     }
   };
 
@@ -209,6 +265,7 @@ const initArcadeVibes = () => {
     ticker.textContent = theme.ticker;
     vibeButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.vibe === vibeId));
     applyAccent();
+    setArcadeTicker(`Vibe changed to ${theme.label}.`);
   };
 
   vibeButtons.forEach((btn) => btn.addEventListener('click', () => applyVibe(btn.dataset.vibe)));
@@ -219,18 +276,72 @@ const initArcadeVibes = () => {
 };
 
 const initArcadeHelpers = () => {
+  const spotlight = () => {
+    dom.gameArea?.classList.add('spotlit');
+    setTimeout(() => dom.gameArea?.classList.remove('spotlit'), 800);
+  };
+
   dom.arcadeShuffle?.addEventListener('click', () => {
     const keys = Object.keys(controllers);
     const next = keys[Math.floor(Math.random() * keys.length)];
     enterArcade();
     hideTreeForArcade();
     activateGame(next);
+    setArcadeTicker(`Shuffled to ${gameLabels[next]}.`);
+    spotlight();
   });
 
   dom.arcadeFocus?.addEventListener('click', () => {
     dom.gamePanel?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     dom.gameArea?.focus({ preventScroll: true });
+    spotlight();
+    setArcadeTicker('Arcade centered. Controllers ready.');
   });
+};
+
+const initArcadePlaylist = () => {
+  if (!dom.playlistRail) return;
+  let lineup = [...arcadeLineup];
+
+  const render = () => {
+    dom.playlistRail.innerHTML = lineup
+      .map(
+        (item) => `
+        <article class="playlist-card" data-id="${item.id}">
+          <div>
+            <p class="pill tiny">${item.mood}</p>
+            <h4>${gameLabels[item.id]}</h4>
+            <p class="muted">${item.desc}</p>
+          </div>
+          <div class="playlist-actions">
+            <button class="action" data-start="${item.id}">Play</button>
+          </div>
+        </article>
+      `
+      )
+      .join('');
+
+    dom.playlistRail.querySelectorAll('[data-start]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.start;
+        enterArcade();
+        hideTreeForArcade();
+        activateGame(id);
+        setArcadeTicker(`${gameLabels[id]} beaming into the arcade.`);
+      });
+    });
+
+    setPlaylistActive(currentGame);
+  };
+
+  dom.arcadeLineupRefresh?.addEventListener('click', () => {
+    lineup.push(lineup.shift());
+    lineup.push(lineup.shift());
+    render();
+    setArcadeTicker('Arcade lineup rotated. New picks up top.');
+  });
+
+  render();
 };
 
 const setSantaStatus = (answer) => {
@@ -318,6 +429,7 @@ const initInteractions = () => {
   initScreenshot();
   initArcadeVibes();
   initArcadeHelpers();
+  initArcadePlaylist();
   initTreeScene();
   dom.treeReturnBtn?.addEventListener('click', showTreeView);
 };

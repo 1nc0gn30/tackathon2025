@@ -2,7 +2,6 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.m
 import { dom } from '../utils/dom.js';
 import { cleanupTimers, state } from '../utils/state.js';
 import { snowWatchlist } from '../data/catalog.js';
-import { setAccent } from '../utils/dom.js';
 
 const snowCodes = new Set([71, 73, 75, 77, 85, 86]);
 let logEl,
@@ -15,8 +14,8 @@ let logEl,
   snowPreviewCanvas,
   snowPreviewWrap,
   snowMakerLabel,
-  snowIntensity,
-  snowSwirl;
+  snowModeStatus,
+  snowModeToggle;
 let snowRenderer,
   snowScene,
   snowCamera,
@@ -25,7 +24,14 @@ let snowRenderer,
   snowVelocities,
   snowCounts,
   snowResizeHandler;
-const snowConfig = { intensity: 26, swirl: 0.65 };
+let activeSnowModeIndex = 0;
+
+const snowModes = [
+  { id: 'regular', label: 'Regular', description: 'Classic flakes for the snowglobe vibe.', intensity: 26, swirl: 0.65, color: 0xffffff, fogColor: 0x0c1b23, fall: 0.015, drift: 0.008 },
+  { id: 'psychedelic', label: 'Psychedelic', description: 'Neon glitter that bends around the tree.', intensity: 46, swirl: 1.2, color: 0xff78ff, fogColor: 0x1a082f, fall: 0.017, drift: 0.012 },
+  { id: 'rain', label: 'Rain', description: 'Sleety rain streaks with blue neon backlight.', intensity: 32, swirl: 0.18, color: 0x7ec8ff, fogColor: 0x0a0f19, fall: 0.024, drift: 0.006 },
+  { id: 'sunny', label: 'Sunny', description: 'Gentle sparkles under a warm sky.', intensity: 16, swirl: 0.05, color: 0xffdd9c, fogColor: 0x1f1405, fall: 0.01, drift: 0.004 },
+];
 
 const destroySnowPreview = () => {
   if (snowResizeHandler) {
@@ -55,7 +61,8 @@ const initSnowPreview = () => {
   snowRenderer.setSize(width, height);
   snowRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   snowScene = new THREE.Scene();
-  snowScene.fog = new THREE.FogExp2(0x0c1b23, 0.12);
+  const mode = snowModes[activeSnowModeIndex] || snowModes[0];
+  snowScene.fog = new THREE.FogExp2(mode.fogColor, 0.12);
 
   snowCamera = new THREE.PerspectiveCamera(50, width / height, 0.1, 40);
   snowCamera.position.set(0, 0.2, 6);
@@ -65,7 +72,7 @@ const initSnowPreview = () => {
   glow.position.set(0.4, 2.2, 4.5);
   snowScene.add(glow);
 
-  const count = Math.floor(280 + snowConfig.intensity * 8);
+  const count = Math.floor(240 + mode.intensity * 8);
   snowCounts = count;
   const positions = new Float32Array(count * 3);
   snowVelocities = new Float32Array(count * 2);
@@ -73,14 +80,14 @@ const initSnowPreview = () => {
     positions[i * 3] = (Math.random() - 0.5) * 6;
     positions[i * 3 + 1] = Math.random() * 6;
     positions[i * 3 + 2] = Math.random() * 2 - 1;
-    snowVelocities[i * 2] = 0.4 + Math.random() * (snowConfig.intensity / 50);
-    snowVelocities[i * 2 + 1] = (Math.random() - 0.5) * snowConfig.swirl;
+    snowVelocities[i * 2] = 0.4 + Math.random() * (mode.intensity / 50);
+    snowVelocities[i * 2 + 1] = (Math.random() - 0.5) * mode.swirl;
   }
 
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   const material = new THREE.PointsMaterial({
-    color: 0xffffff,
+    color: mode.color,
     size: 0.08,
     transparent: true,
     opacity: 0.9,
@@ -94,8 +101,8 @@ const initSnowPreview = () => {
     const array = pos.array;
     const time = Date.now() * 0.001;
     for (let i = 0; i < snowCounts; i++) {
-      array[i * 3 + 1] -= snowVelocities[i * 2] * 0.015;
-      array[i * 3] += Math.sin(time + i * 0.5) * snowVelocities[i * 2 + 1] * 0.008;
+      array[i * 3 + 1] -= snowVelocities[i * 2] * (mode.fall || 0.015);
+      array[i * 3] += Math.sin(time + i * 0.5) * snowVelocities[i * 2 + 1] * (mode.drift || 0.008);
       if (array[i * 3 + 1] < -1.5) {
         array[i * 3 + 1] = 5.5;
         array[i * 3] = (Math.random() - 0.5) * 6;
@@ -153,7 +160,8 @@ const renderCurrentWeather = (data, label) => {
     </div>
     <div class="muted">${label}</div>
   `;
-  weatherStatusEl.textContent = 'Updated just now via Open-Meteo';
+  const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  weatherStatusEl.textContent = `Updated ${now} via Open-Meteo`;
 };
 
 const renderSnowPlaces = (places) => {
@@ -193,21 +201,33 @@ const renderSnowPlaces = (places) => {
 const fetchWeather = async (lat, lon, label) => {
   weatherStatusEl.textContent = 'Contacting Open-Meteo...';
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,weathercode,snowfall&timezone=auto`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('Weather fetch failed');
-  const data = await res.json();
-  if (!data.current) throw new Error('No current weather block');
-  state.lastLocationLabel = label;
-  renderCurrentWeather(data.current, label);
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Weather fetch failed');
+    const data = await res.json();
+    if (!data.current) throw new Error('No current weather block');
+    state.lastLocationLabel = label;
+    renderCurrentWeather(data.current, label);
+  } catch (err) {
+    weatherStatusEl.textContent = `Weather lookup failed: ${err.message}`;
+    throw err;
+  }
 };
 
 const findByCityName = async (name) => {
-  const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=en&format=json`);
-  if (!res.ok) throw new Error('Lookup failed');
-  const data = await res.json();
-  if (!data.results || !data.results.length) throw new Error('City not found');
-  const match = data.results[0];
-  await fetchWeather(match.latitude, match.longitude, `${match.name}, ${match.country_code}`);
+  try {
+    const res = await fetch(
+      `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=en&format=json`
+    );
+    if (!res.ok) throw new Error('Lookup failed');
+    const data = await res.json();
+    if (!data.results || !data.results.length) throw new Error('City not found');
+    const match = data.results[0];
+    await fetchWeather(match.latitude, match.longitude, `${match.name}, ${match.country_code}`);
+  } catch (err) {
+    weatherStatusEl.textContent = err.message;
+    throw err;
+  }
 };
 
 const fetchSnowWatch = async () => {
@@ -231,9 +251,10 @@ const fetchSnowWatch = async () => {
 
 const startStream = () => {
   cleanupTimers();
-  addLog(`⚙️ Generating crystal snowflakes (density ${snowConfig.intensity}, swirl ${snowConfig.swirl})...`);
+  const mode = snowModes[activeSnowModeIndex] || snowModes[0];
+  addLog(`⚙️ Generating ${mode.label.toLowerCase()} snow (${mode.description})...`);
   let count = 0;
-  const delay = Math.max(140, 520 - snowConfig.intensity * 6);
+  const delay = Math.max(140, 520 - mode.intensity * 6);
   state.activeInterval = setInterval(() => {
     const flake = '*'.repeat(2 + Math.floor(Math.random() * 6));
     const drift = Math.random() > 0.5 ? '↺ swirl' : '↻ gust';
@@ -273,17 +294,17 @@ export const SnowConsole = {
       <div class="snow-lab" aria-label="Snow maker studio">
         <div>
           <h3>Snow Maker Studio</h3>
-          <p class="muted" id="snowMakerLabel">Dial in cinematic snow, then blast it into the console.</p>
-          <div class="lab-controls">
-            <label class="lab-slider">Flake density<input type="range" id="snowIntensity" min="8" max="60" value="26" /></label>
-            <label class="lab-slider">Wind swirl<input type="range" id="snowSwirl" min="0" max="1" step="0.05" value="0.65" /></label>
+          <p class="muted" id="snowMakerLabel">Switch modes to change the scene instead of wrestling sliders.</p>
+          <div class="lab-buttons">
+            <button class="action" id="snowModeToggle">Change snow vibe</button>
+            <span class="pill tiny" id="snowModeStatus">Mode: Regular</span>
           </div>
         </div>
         <div class="snow-preview" id="snowPreview" aria-label="3D snow preview">
           <canvas id="snowPreviewCanvas" aria-hidden="true"></canvas>
           <div class="snow-preview-overlay">
             <span class="pill tiny">Live 3D snow</span>
-            <p class="muted">Adjust the sliders to see flakes dance.</p>
+            <p class="muted">Tap to cycle: regular • psychedelic • rain • sunny.</p>
           </div>
         </div>
       </div>
@@ -304,26 +325,27 @@ export const SnowConsole = {
     snowPreviewCanvas = document.getElementById('snowPreviewCanvas');
     snowPreviewWrap = document.getElementById('snowPreview');
     snowMakerLabel = document.getElementById('snowMakerLabel');
-    snowIntensity = document.getElementById('snowIntensity');
-    snowSwirl = document.getElementById('snowSwirl');
+    snowModeStatus = document.getElementById('snowModeStatus');
+    snowModeToggle = document.getElementById('snowModeToggle');
     addLog('Console booted. Brrr.');
 
     const startBtn = document.getElementById('snowPrint');
     const stopBtn = document.getElementById('snowStop');
     const detectBtn = document.getElementById('detectWeather');
 
-    const updateSnowMaker = () => {
-      snowConfig.intensity = Number(snowIntensity?.value || snowConfig.intensity);
-      snowConfig.swirl = Number(snowSwirl?.value || snowConfig.swirl);
-      if (snowMakerLabel) {
-        snowMakerLabel.textContent = `Density ${snowConfig.intensity} • Swirl ${snowConfig.swirl}`;
-      }
+    const setSnowMode = (index = 0) => {
+      activeSnowModeIndex = (index + snowModes.length) % snowModes.length;
+      const mode = snowModes[activeSnowModeIndex];
+      if (snowMakerLabel) snowMakerLabel.textContent = `${mode.label}: ${mode.description}`;
+      if (snowModeStatus) snowModeStatus.textContent = `Mode: ${mode.label}`;
+      addLog(`❄️ Snow mode set to ${mode.label}.`);
       initSnowPreview();
     };
 
-    snowIntensity?.addEventListener('input', updateSnowMaker);
-    snowSwirl?.addEventListener('input', updateSnowMaker);
-    updateSnowMaker();
+    const cycleSnowMode = () => setSnowMode(activeSnowModeIndex + 1);
+
+    snowModeToggle?.addEventListener('click', cycleSnowMode);
+    setSnowMode(0);
 
     startBtn.addEventListener('click', startStream);
     stopBtn.addEventListener('click', () => {
